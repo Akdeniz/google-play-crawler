@@ -3,9 +3,11 @@ package com.akdeniz.googleplaycrawler;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.apache.http.HttpEntity;
@@ -24,6 +26,8 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.akdeniz.googleplaycrawler.GoogleServicesFramework.AndroidCheckinRequest;
+import com.akdeniz.googleplaycrawler.GoogleServicesFramework.AndroidCheckinResponse;
 import com.akdeniz.googleplaycrawler.Googleplay.AndroidAppDeliveryData;
 import com.akdeniz.googleplaycrawler.Googleplay.BrowseResponse;
 import com.akdeniz.googleplaycrawler.Googleplay.BulkDetailsRequest;
@@ -47,53 +51,165 @@ public class GooglePlayAPI {
 	private static String SERVICE = "androidmarket";
 	private static String URL_LOGIN = "https://android.clients.google.com/auth";
 	private static String ACCOUNT_TYPE_HOSTED_OR_GOOGLE = "HOSTED_OR_GOOGLE";
+	private static String CHECKIN_REQUEST_BASE64 = "EAAitQEKiwEKNWdlbmVyaWMvc2RrL2dlbmVyaWM6NC4"
+			+ "xLjEvSlJPMDNFLzQwMzA1OTplbmcvdGVzdC1rZXlzEghnb2xkZmlzaBoHZ2VuZXJpYyoHdW5"
+			+ "rbm93bjIOYW5kcm9pZC1nb29nbGU4kJOCgAVAEEoHZ2VuZXJpY1AQWgNzZGtiB3Vua25vd25"
+			+ "qA3Nka3AAEAAyBjMxMDI2MDoGMzEwMjYwQhFtb2JpbGUtbm90cm9hbWluZ0gAMgVlbl9VU1I"
+			+ "PMDAwMDAwMDAwMDAwMDAwYg9FdXJvcGUvSXN0YW5idWxwA5IBjQkIAxACGAMgAigBMAE48AF"
+			+ "AAEoTYW5kcm9pZC50ZXN0LnJ1bm5lckodY29tLmFuZHJvaWQubG9jYXRpb24ucHJvdmlkZXJ"
+			+ "KCmphdmF4Lm9iZXhSGmFuZHJvaWQuaGFyZHdhcmUuYmx1ZXRvb3RoUhdhbmRyb2lkLmhhcmR"
+			+ "3YXJlLmNhbWVyYVIhYW5kcm9pZC5oYXJkd2FyZS5jYW1lcmEuYXV0b2ZvY3VzUhphbmRyb2l"
+			+ "kLmhhcmR3YXJlLmZha2V0b3VjaFIZYW5kcm9pZC5oYXJkd2FyZS5sb2NhdGlvblIhYW5kcm9"
+			+ "pZC5oYXJkd2FyZS5sb2NhdGlvbi5uZXR3b3JrUhthbmRyb2lkLmhhcmR3YXJlLm1pY3JvcGh"
+			+ "vbmVSIWFuZHJvaWQuaGFyZHdhcmUuc2NyZWVuLmxhbmRzY2FwZVIgYW5kcm9pZC5oYXJkd2F"
+			+ "yZS5zY3JlZW4ucG9ydHJhaXRSJWFuZHJvaWQuaGFyZHdhcmUuc2Vuc29yLmFjY2VsZXJvbWV"
+			+ "0ZXJSH2FuZHJvaWQuaGFyZHdhcmUuc2Vuc29yLmNvbXBhc3NSHGFuZHJvaWQuaGFyZHdhcmU"
+			+ "udG91Y2hzY3JlZW5SJ2FuZHJvaWQuaGFyZHdhcmUudG91Y2hzY3JlZW4ubXVsdGl0b3VjaFI"
+			+ "wYW5kcm9pZC5oYXJkd2FyZS50b3VjaHNjcmVlbi5tdWx0aXRvdWNoLmRpc3RpbmN0UjBhbmR"
+			+ "yb2lkLmhhcmR3YXJlLnRvdWNoc2NyZWVuLm11bHRpdG91Y2guamF6emhhbmRaC2FybWVhYmk"
+			+ "tdjdhWgdhcm1lYWJpYOADaKAGcgJhcnIFYXJfRUdyBWFyX0lMcgJiZ3IFYmdfQkdyAmNhcgV"
+			+ "jYV9FU3ICY3NyBWNzX0NacgJkYXIFZGFfREtyAmRlcgVkZV9BVHIFZGVfQ0hyBWRlX0RFcgV"
+			+ "kZV9MSXICZWxyBWVsX0dScgJlbnIFZW5fQVVyBWVuX0NBcgVlbl9HQnIFZW5fSUVyBWVuX0l"
+			+ "OcgVlbl9OWnIFZW5fU0dyBWVuX1VTcgVlbl9aQXICZXNyBWVzX0VTcgVlc19VU3ICZmFyAmZ"
+			+ "pcgVmaV9GSXICZnJyBWZyX0JFcgVmcl9DQXIFZnJfQ0hyBWZyX0ZScgJoaXIFaGlfSU5yAmh"
+			+ "ycgVocl9IUnICaHVyBWh1X0hVcgJpZHICaW5yAml0cgVpdF9DSHIFaXRfSVRyAml3cgJqYXI"
+			+ "FamFfSlByAmtvcgVrb19LUnICbHRyBWx0X0xUcgJsdnIFbHZfTFZyAm5icgVuYl9OT3ICbmx"
+			+ "yBW5sX0JFcgVubF9OTHICcGxyBXBsX1BMcgJwdHIFcHRfQlJyBXB0X1BUcgJyb3IFcm9fUk9"
+			+ "yAnJ1cgVydV9SVXICc2tyBXNrX1NLcgJzbHIFc2xfU0lyAnNycgVzcl9SU3ICc3ZyBXN2X1N"
+			+ "FcgJ0aHIFdGhfVEhyAnRscgV0bF9QSHICdHJyBXRyX1RScgJ1a3IFdWtfVUFyAnZpcgV2aV9" + "WTnIFemhfQ05yBXpoX1RXoAEA";
 
 	private String authSubToken;
 	private String androidId;
+	private String securityToken;
 
 	public GooglePlayAPI(String androidId) {
-		this.androidId = androidId;
+		this.setAndroidId(androidId);
+	}
+	
+	public GooglePlayAPI() {
 	}
 
-	public void login(String email, String password) throws IOException {
-		HttpEntity responseEntity = executePost(URL_LOGIN, new String[][] { { "Email", email },
-																			{ "Passwd", password },
-																			{ "service", SERVICE },
-																			{	"accountType",
-																				ACCOUNT_TYPE_HOSTED_OR_GOOGLE },
-																			{ "has_permission", "1" },
-																			{ "source", "android" },
-																			{ "androidId", this.androidId },
-																			{ "app", "com.android.vending" },
-																			{ "device_country", "en" },
-																			{ "lang", "en" },
-																			{ "sdk_version", "16" }, }, null);
+	/**
+	 * Authenticate with given email and password.
+	 * 
+	 * If android id is not supplied while initializing, this method will try to acquire one.
+	 */
+	public void login(String email, String password) throws Exception {
 
-		StringTokenizer st = new StringTokenizer(new String(readAll(responseEntity.getContent())), "\n\r=");
+		if (this.getAndroidId() == null) {
+			AndroidCheckinResponse checkinResponse = checkin(Base64.decode(CHECKIN_REQUEST_BASE64, Base64.NO_WRAP));
 
-		while (st.hasMoreTokens()) {
-			if (st.nextToken().equalsIgnoreCase("Auth")) {
-				String token = st.nextToken();
-				System.out.println("authSubToken found : " + token);
-				setAuthSubToken(token);
-				break;
+			this.setAndroidId(BigInteger.valueOf(checkinResponse.getAndroidId()).toString(16));
+			this.setSecurityToken(BigInteger.valueOf(checkinResponse.getSecurityToken()).toString(16));
+
+			authAndCheckin(email, password);
+
+		} else {
+			HttpEntity responseEntity = executePost(URL_LOGIN, new String[][] { { "Email", email },
+																				{ "Passwd", password },
+																				{ "service", SERVICE },
+																				{	"accountType",
+																					ACCOUNT_TYPE_HOSTED_OR_GOOGLE },
+																				{ "has_permission", "1" },
+																				{ "source", "android" },
+																				{ "androidId", this.getAndroidId() },
+																				{ "app", "com.android.vending" },
+																				{ "device_country", "en" },
+																				{ "lang", "en" },
+																				{ "sdk_version", "16" }, }, null);
+
+			Map<String, String> response = Utils.parseResponse(new String(Utils.readAll(responseEntity.getContent())));
+			if(response.containsKey("Auth")){
+				setAuthSubToken(response.get("Auth"));
+			} else {
+				throw new GooglePlayException("Authentication failed!");
 			}
 		}
-		if (getAuthSubToken() == null)
-			throw new IOException("authSubToken not found in ");
 	}
 
-	private static byte[] readAll(InputStream inputStream) throws IOException {
+	/**
+	 * Performs authentication on three different service (ac2dm, sierra, androidmarket) and match up
+	 * android id, security token and email by checking them in.
+	 *
+	 */
+	private void authAndCheckin(String email, String password) throws Exception {
 
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		byte[] buffer = new byte[1024];
+		StringBuilder builder = new StringBuilder();
+		builder.append(email);
+		builder.append("\u0000");
+		builder.append(password);
 
-		int k = 0;
-		for (; (k = inputStream.read(buffer)) != -1;) {
-			outputStream.write(buffer, 0, k);
+		String encryptedPassword = Utils.encryptString(builder.toString());
+
+		HttpEntity c2dmResponseEntity = executePost(URL_LOGIN,
+				new String[][] { { "Email", email },
+								{ "EncryptedPasswd", encryptedPassword },
+								{ "service", "ac2dm" },
+								{ "accountType", ACCOUNT_TYPE_HOSTED_OR_GOOGLE },
+								{ "has_permission", "1" },
+								{ "add_account", "1" },
+								{ "source", "android" },
+								{ "androidId", this.getAndroidId() },
+								{ "device_country", "us" },
+								{ "device_country", "us" },
+								{ "lang", "en" },
+								{ "sdk_version", "16" }, }, null);
+
+		Map<String, String> c2dmAuth = Utils.parseResponse(new String(Utils.readAll(c2dmResponseEntity.getContent())));
+
+		HttpEntity sierraResponseEntity = executePost(URL_LOGIN,
+				new String[][] { { "Email", email },
+								{ "Token", c2dmAuth.get("Token") },
+								{ "service", "sierra" },
+								{ "accountType", ACCOUNT_TYPE_HOSTED_OR_GOOGLE },
+								{ "has_permission", "1" },
+								{ "source", "android" },
+								{ "androidId", this.getAndroidId() },
+								{ "app", "com.android.vending" },
+								{ "client_sig", "38918a453d07199354f8b19af05ec6562ced5788" },
+								{ "device_country", "us" },
+								{ "device_country", "us" },
+								{ "lang", "en" },
+								{ "sdk_version", "16" }, }, null);
+
+		//Map<String, String> sierraAuth = Utils.parseResponse(new String(readAll(sierraResponseEntity.getContent())));
+
+		HttpEntity marketResponseEntity = executePost(URL_LOGIN,
+				new String[][] { { "Email", email },
+								{ "Token", c2dmAuth.get("Token") },
+								{ "service", "androidmarket" },
+								{ "accountType", ACCOUNT_TYPE_HOSTED_OR_GOOGLE },
+								{ "has_permission", "1" },
+								{ "source", "android" },
+								{ "androidId", this.getAndroidId() },
+								{ "app", "com.android.vending" },
+								{ "client_sig", "38918a453d07199354f8b19af05ec6562ced5788" },
+								{ "device_country", "us" },
+								{ "device_country", "us" },
+								{ "lang", "en" },
+								{ "sdk_version", "16" }, }, null);
+
+		Map<String, String> marketAuth = Utils.parseResponse(new String(Utils.readAll(marketResponseEntity.getContent())));
+
+		if (marketAuth.containsKey("Auth")) {
+			setAuthSubToken(marketAuth.get("Auth"));
+		} else {
+			throw new GooglePlayException("Authentication failed!");
 		}
 
-		return outputStream.toByteArray();
+		AndroidCheckinRequest checkinRequest = GoogleServicesFramework.AndroidCheckinRequest.parseFrom(Base64.decode(
+				CHECKIN_REQUEST_BASE64, Base64.NO_WRAP));
+		GoogleServicesFramework.AndroidCheckinRequest.Builder checkInbuilder = GoogleServicesFramework.AndroidCheckinRequest
+				.newBuilder(checkinRequest);
+
+		checkInbuilder.setId(new BigInteger(this.getAndroidId(), 16).longValue());
+		checkInbuilder.setSecurityToken(new BigInteger(this.getSecurityToken(), 16).longValue());
+		checkInbuilder.addAccountCookie("[" + email + "]");
+		checkInbuilder.addAccountCookie(marketAuth.get("SID"));
+
+		AndroidCheckinRequest build = checkInbuilder.build();
+		AndroidCheckinResponse checkinResponse = checkin(build.toByteArray());
+
 	}
 
 	private HttpEntity executePost(String url, String[][] postParams, String[][] headerParams) throws IOException {
@@ -157,17 +273,24 @@ public class GooglePlayAPI {
 	private HttpEntity executeHttpRequest(HttpUriRequest request) throws ClientProtocolException, IOException {
 		HttpClient client = new DefaultHttpClient();
 
-		/*try {
-			client.getConnectionManager().getSchemeRegistry().register(Utils.getMockedScheme());
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-
-		// proxy TODO : disable!
-		HttpHost proxy = new HttpHost("localhost", 8888);
-		client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);*/
+		/*
+		 * try {
+		 * client.getConnectionManager().getSchemeRegistry().register(Utils
+		 * .getMockedScheme()); } catch (Exception e) { throw new
+		 * RuntimeException(e); }
+		 * 
+		 * // proxy TODO : disable! 
+		 * HttpHost proxy = new HttpHost("localhost",
+		 * 8888); client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY,
+		 * proxy);
+		 */
 
 		HttpResponse response = client.execute(request);
+		
+		if (response.getStatusLine().getStatusCode() != 200) {
+			throw new GooglePlayException(new String(Utils.readAll(response
+					.getEntity().getContent())));
+		}
 
 		return response.getEntity();
 	}
@@ -178,6 +301,22 @@ public class GooglePlayAPI {
 
 	public void setAuthSubToken(String authSubToken) {
 		this.authSubToken = authSubToken;
+	}
+
+	public String getAndroidId() {
+		return androidId;
+	}
+
+	public void setAndroidId(String androidId) {
+		this.androidId = androidId;
+	}
+
+	public String getSecurityToken() {
+		return securityToken;
+	}
+
+	public void setSecurityToken(String securityToken) {
+		this.securityToken = securityToken;
 	}
 
 	public SearchResponse search(String query) throws IOException {
@@ -242,6 +381,15 @@ public class GooglePlayAPI {
 		return responseWrapper.getPayload().getListResponse();
 	}
 
+	private AndroidCheckinResponse checkin(byte[] request) throws IOException {
+
+		HttpEntity httpEntity = executePost("https://android.clients.google.com/checkin", new ByteArrayEntity(request),
+				new String[][] { { "User-Agent", "Android-Checkin/2.0 (generic JRO03E); gzip" },
+								{ "Host", "android.clients.google.com" },
+								{ "Content-Type", "application/x-protobuffer" } });
+		return AndroidCheckinResponse.parseFrom(httpEntity.getContent());
+	}
+
 	private BuyResponse purchase(String packageName, int versionCode, int offerType) throws IOException {
 
 		ResponseWrapper responseWrapper = executePOSTRequest(
@@ -295,7 +443,7 @@ public class GooglePlayAPI {
 								{ "X-DFE-Enabled-Experiments", "cl:billing.select_add_instrument_by_default" },
 								{	"X-DFE-Unsupported-Experiments",
 									"nocache:billing.use_charging_poller,market_emails,buyer_currency,prod_baseline,checkin.set_asset_paid_app_field,shekel_test,content_ratings,buyer_currency_in_app,nocache:encrypted_apk,recent_changes" },
-								{ "X-DFE-Device-Id", this.androidId },
+								{ "X-DFE-Device-Id", this.getAndroidId() },
 								{ "X-DFE-Client-Id", "am-android-google" },
 								{	"User-Agent",
 									"Android-Finsky/3.7.13 (api=3,versionCode=8013013,sdk=16,device=crespo,hardware=herring,product=soju)" },

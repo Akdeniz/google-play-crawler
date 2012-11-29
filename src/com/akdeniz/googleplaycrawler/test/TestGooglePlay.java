@@ -22,20 +22,24 @@ import com.akdeniz.googleplaycrawler.Googleplay.SearchResponse;
  * 
  */
 public class TestGooglePlay {
-
+	
 	// your device id, which can be optained from Gtalk Service Monitor(aid key)
-	// by "*#*#8255#*#*" combination
-	public static String ANDROID_ID = "1234567890123456";
-	public static String GOOGLE_LOGIN = "";
-	public static String GOOGLE_PASSWORD = "";
+	// by "*#*#8255#*#*" combination, but you dont need one.
+	public static String ANDROID_ID = "xxxxxxx";
+	public static String GOOGLE_LOGIN = "xxxxxxx@gmail.com";
+	public static String GOOGLE_PASSWORD = "xxxxxxxx";
 
-	private static GooglePlayAPI service = new GooglePlayAPI(ANDROID_ID);
+	private static GooglePlayAPI service = new GooglePlayAPI();
 
 	public static void main(String[] args) throws IOException, Exception {
 
-		// one can set authSubToken not to call login at evert turn
+		// one can set authSubToken not to call login at every turn
 		// service.setAuthSubToken("here-comes-auth-string");
 		service.login(GOOGLE_LOGIN, GOOGLE_PASSWORD);
+
+		System.out.println("SubAuthToken : " + service.getAuthSubToken());
+		System.out.println("AndroidId : " + service.getAndroidId());
+		System.out.println("SecurityToken : " + service.getSecurityToken());
 
 		testBrowse();
 		testBrowseSubCategories();
@@ -46,8 +50,8 @@ public class TestGooglePlay {
 		testPermissions();
 		testBulkDetails();
 		testDownload();
-		
-		System.out.println("Tests passed succesfully!");
+
+		System.out.println("Tests are passed succesfully!");
 
 	}
 
@@ -96,7 +100,7 @@ public class TestGooglePlay {
 	private static void testPermissions() throws IOException {
 		DetailsResponse details = service.details("com.mobulasoft.criticker");
 		AppDetails appDetails = details.getDocV2().getDetails().getAppDetails();
- 
+
 		for (String permission : appDetails.getPermissionList()) {
 			System.out.println(permission);
 		}
@@ -113,7 +117,7 @@ public class TestGooglePlay {
 			AppDetails appDetails = doc.getDetails().getAppDetails();
 			System.out.println(doc.getDocid());
 			for (String permission : appDetails.getPermissionList()) {
-				System.out.println("\t"+ permission);
+				System.out.println("\t" + permission);
 			}
 		}
 
