@@ -27,19 +27,20 @@ public class TestGooglePlay {
 	// by "*#*#8255#*#*" combination, but you dont need one.
 	public static String ANDROID_ID = "xxxxxxx";
 	public static String GOOGLE_LOGIN = "xxxxxxx@gmail.com";
-	public static String GOOGLE_PASSWORD = "xxxxxxxx";
+	public static String GOOGLE_PASSWORD = "xxxxxxx";
 
-	private static GooglePlayAPI service = new GooglePlayAPI();
+	private static GooglePlayAPI service = new GooglePlayAPI(GOOGLE_LOGIN, GOOGLE_PASSWORD);
 
 	public static void main(String[] args) throws IOException, Exception {
 
 		// one can set authSubToken not to call login at every turn
 		// service.setAuthSubToken("here-comes-auth-string");
-		service.login(GOOGLE_LOGIN, GOOGLE_PASSWORD);
+		service.checkin();
+		Thread.sleep(5000); // allow server to catch up...
+		service.login();
 
 		System.out.println("SubAuthToken : " + service.getAuthSubToken());
 		System.out.println("AndroidId : " + service.getAndroidId());
-		System.out.println("SecurityToken : " + service.getSecurityToken());
 
 		testBrowse();
 		testBrowseSubCategories();
