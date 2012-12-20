@@ -44,7 +44,7 @@ import net.sourceforge.argparse4j.inf.Subparsers;
 
 public class googleplay {
 
-    private static final String DELIMETER = "\t";
+    private static final String DELIMETER = ";";
 
     private ArgumentParser parser;
     private GooglePlayAPI service;
@@ -55,7 +55,7 @@ public class googleplay {
     }
 
     private static final String LIST_HEADER = new StringJoiner(DELIMETER).add("Title").add("Package").add("Creator")
-	    .add("Price").add("Version").add("Installation Size").add("Number Of Downloads").toString();
+	    .add("Price").add("Installation Size").add("Number Of Downloads").toString();
     private static final String CATEGORIES_HEADER = new StringJoiner(DELIMETER).add("ID").add("Name").toString();
     private static final String SUBCATEGORIES_HEADER = new StringJoiner(DELIMETER).add("ID").add("Title").toString();;
 
@@ -220,8 +220,7 @@ public class googleplay {
 	    AppDetails appDetails = child.getDetails().getAppDetails();
 	    String formatted = new StringJoiner(DELIMETER).add(child.getTitle()).add(appDetails.getPackageName())
 		    .add(child.getCreator()).add(child.getOffer(0).getFormattedAmount())
-		    .add(appDetails.getVersionString()).add(String.valueOf(appDetails.getInstallationSize()))
-		    .add(appDetails.getNumDownloads()).toString();
+		    .add(String.valueOf(appDetails.getInstallationSize())).add(appDetails.getNumDownloads()).toString();
 	    System.out.println(formatted);
 
 	}
@@ -311,8 +310,8 @@ public class googleplay {
 		AppDetails appDetails = child.getDetails().getAppDetails();
 		String formatted = new StringJoiner(DELIMETER).add(child.getTitle()).add(appDetails.getPackageName())
 			.add(child.getCreator()).add(child.getOffer(0).getFormattedAmount())
-			.add(appDetails.getVersionString()).add(String.valueOf(appDetails.getInstallationSize()))
-			.add(appDetails.getNumDownloads()).toString();
+			.add(String.valueOf(appDetails.getInstallationSize())).add(appDetails.getNumDownloads())
+			.toString();
 		System.out.println(formatted);
 
 	    }
