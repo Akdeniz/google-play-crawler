@@ -42,6 +42,8 @@ public class TestGooglePlay {
 	service.login();
 	System.out.println("SubAuthToken : " + service.getToken());
 	System.out.println("AndroidId : " + service.getAndroidID());
+	
+	service.uploadDeviceConfig();
 
 	testBrowse();
 	testBrowseSubCategories();

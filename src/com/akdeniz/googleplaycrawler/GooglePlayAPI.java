@@ -35,6 +35,8 @@ import com.akdeniz.googleplaycrawler.Googleplay.ListResponse;
 import com.akdeniz.googleplaycrawler.Googleplay.ResponseWrapper;
 import com.akdeniz.googleplaycrawler.Googleplay.ReviewResponse;
 import com.akdeniz.googleplaycrawler.Googleplay.SearchResponse;
+import com.akdeniz.googleplaycrawler.Googleplay.UploadDeviceConfigRequest;
+import com.akdeniz.googleplaycrawler.Googleplay.UploadDeviceConfigResponse;
 
 /**
  * This class provides
@@ -64,12 +66,13 @@ public class GooglePlayAPI {
     private static final String BULKDETAILS_URL = FDFE_URL + "bulkDetails";
     private static final String PURCHASE_URL = FDFE_URL + "purchase";
     private static final String REVIEWS_URL = FDFE_URL + "rev";
+    private static final String UPLOADDEVICECONFIG_URL = FDFE_URL + "uploadDeviceConfig";
 
     private static final String ACCOUNT_TYPE_HOSTED_OR_GOOGLE = "HOSTED_OR_GOOGLE";
-    
+
     public static enum REVIEW_SORT {
 	NEWEST(0), HIGHRATING(1), HELPFUL(2);
-	
+
 	public int value;
 
 	private REVIEW_SORT(int value) {
@@ -121,8 +124,7 @@ public class GooglePlayAPI {
 	HttpEntity c2dmResponseEntity = executePost(URL_LOGIN, new String[][] { { "Email", this.email },
 		{ "Passwd", this.password }, { "service", "ac2dm" }, { "accountType", ACCOUNT_TYPE_HOSTED_OR_GOOGLE },
 		{ "has_permission", "1" }, { "source", "android" }, { "app", "com.google.android.gsf" },
-		{ "device_country", "us" }, { "device_country", "us" }, { "lang", "en" }, { "sdk_version", "16" }, },
-		null);
+		{ "device_country", "us" }, { "device_country", "us" }, { "lang", "en" }, { "sdk_version", "16" }, }, null);
 
 	Map<String, String> c2dmAuth = Utils.parseResponse(new String(Utils.readAll(c2dmResponseEntity.getContent())));
 
@@ -151,11 +153,10 @@ public class GooglePlayAPI {
      */
     public void login() throws Exception {
 
-	HttpEntity responseEntity = executePost(URL_LOGIN, new String[][] { { "Email", this.email },
-		{ "Passwd", this.password }, { "service", "androidmarket" },
-		{ "accountType", ACCOUNT_TYPE_HOSTED_OR_GOOGLE }, { "has_permission", "1" }, { "source", "android" },
-		{ "androidId", this.getAndroidID() }, { "app", "com.android.vending" }, { "device_country", "en" },
-		{ "lang", "en" }, { "sdk_version", "16" }, }, null);
+	HttpEntity responseEntity = executePost(URL_LOGIN, new String[][] { { "Email", this.email }, { "Passwd", this.password },
+		{ "service", "androidmarket" }, { "accountType", ACCOUNT_TYPE_HOSTED_OR_GOOGLE }, { "has_permission", "1" },
+		{ "source", "android" }, { "androidId", this.getAndroidID() }, { "app", "com.android.vending" },
+		{ "device_country", "en" }, { "lang", "en" }, { "sdk_version", "16" }, }, null);
 
 	Map<String, String> response = Utils.parseResponse(new String(Utils.readAll(responseEntity.getContent())));
 	if (response.containsKey("Auth")) {
@@ -163,7 +164,6 @@ public class GooglePlayAPI {
 	} else {
 	    throw new GooglePlayException("Authentication failed!");
 	}
-
     }
 
     /**
@@ -179,9 +179,9 @@ public class GooglePlayAPI {
      */
     public SearchResponse search(String query, Integer offset, Integer numberOfResult) throws IOException {
 
-	ResponseWrapper responseWrapper = executeGETRequest(SEARCH_URL, new String[][] { { "c", "3" }, { "q", query },
-		{ "o", (offset == null) ? null : String.valueOf(offset) },
-		{ "n", (numberOfResult == null) ? null : String.valueOf(numberOfResult) }, });
+	ResponseWrapper responseWrapper = executeGETRequest(SEARCH_URL,
+		new String[][] { { "c", "3" }, { "q", query }, { "o", (offset == null) ? null : String.valueOf(offset) },
+			{ "n", (numberOfResult == null) ? null : String.valueOf(numberOfResult) }, });
 
 	return responseWrapper.getPayload().getSearchResponse();
     }
@@ -203,8 +203,8 @@ public class GooglePlayAPI {
 	Builder bulkDetailsRequestBuilder = BulkDetailsRequest.newBuilder();
 	bulkDetailsRequestBuilder.addAllDocid(packageNames);
 
-	ResponseWrapper responseWrapper = executePOSTRequest(BULKDETAILS_URL, bulkDetailsRequestBuilder.build()
-		.toByteArray(), "application/x-protobuf");
+	ResponseWrapper responseWrapper = executePOSTRequest(BULKDETAILS_URL, bulkDetailsRequestBuilder.build().toByteArray(),
+		"application/x-protobuf");
 
 	return responseWrapper.getPayload().getBulkDetailsResponse();
     }
@@ -217,8 +217,8 @@ public class GooglePlayAPI {
 
     public BrowseResponse browse(String categoryId, String subCategoryId) throws IOException {
 
-	ResponseWrapper responseWrapper = executeGETRequest(BROWSE_URL, new String[][] { { "c", "3" },
-		{ "cat", categoryId }, { "ctr", subCategoryId } });
+	ResponseWrapper responseWrapper = executeGETRequest(BROWSE_URL, new String[][] { { "c", "3" }, { "cat", categoryId },
+		{ "ctr", subCategoryId } });
 
 	return responseWrapper.getPayload().getBrowseResponse();
     }
@@ -239,12 +239,10 @@ public class GooglePlayAPI {
      * Default values for offset and numberOfResult are "0" and "20"
      * respectively. These values are determined by Google Play Store.
      */
-    public ListResponse list(String categoryId, String subCategoryId, Integer offset, Integer numberOfResult)
-	    throws IOException {
-	ResponseWrapper responseWrapper = executeGETRequest(LIST_URL,
-		new String[][] { { "c", "3" }, { "cat", categoryId }, { "ctr", subCategoryId },
-			{ "o", (offset == null) ? null : String.valueOf(offset) },
-			{ "n", (numberOfResult == null) ? null : String.valueOf(numberOfResult) }, });
+    public ListResponse list(String categoryId, String subCategoryId, Integer offset, Integer numberOfResult) throws IOException {
+	ResponseWrapper responseWrapper = executeGETRequest(LIST_URL, new String[][] { { "c", "3" }, { "cat", categoryId },
+		{ "ctr", subCategoryId }, { "o", (offset == null) ? null : String.valueOf(offset) },
+		{ "n", (numberOfResult == null) ? null : String.valueOf(numberOfResult) }, });
 
 	return responseWrapper.getPayload().getListResponse();
     }
@@ -273,8 +271,8 @@ public class GooglePlayAPI {
     private AndroidCheckinResponse postCheckin(byte[] request) throws IOException {
 
 	HttpEntity httpEntity = executePost(CHECKIN_URL, new ByteArrayEntity(request), new String[][] {
-		{ "User-Agent", "Android-Checkin/2.0 (generic JRO03E); gzip" },
-		{ "Host", "android.clients.google.com" }, { "Content-Type", "application/x-protobuffer" } });
+		{ "User-Agent", "Android-Checkin/2.0 (generic JRO03E); gzip" }, { "Host", "android.clients.google.com" },
+		{ "Content-Type", "application/x-protobuffer" } });
 	return AndroidCheckinResponse.parseFrom(httpEntity.getContent());
     }
 
@@ -284,10 +282,8 @@ public class GooglePlayAPI {
      */
     private BuyResponse purchase(String packageName, int versionCode, int offerType) throws IOException {
 
-	ResponseWrapper responseWrapper = executePOSTRequest(
-		PURCHASE_URL,
-		new String[][] { { "ot", String.valueOf(offerType) }, { "doc", packageName },
-			{ "vc", String.valueOf(versionCode) }, });
+	ResponseWrapper responseWrapper = executePOSTRequest(PURCHASE_URL, new String[][] { { "ot", String.valueOf(offerType) },
+		{ "doc", packageName }, { "vc", String.valueOf(versionCode) }, });
 
 	return responseWrapper.getPayload().getBuyResponse();
     }
@@ -310,13 +306,29 @@ public class GooglePlayAPI {
      * Default values for offset and numberOfResult are "0" and "20"
      * respectively. These values are determined by Google Play Store.
      */
-    public ReviewResponse reviews(String packageName, REVIEW_SORT sort, Integer offset, Integer numberOfResult) throws IOException {
-	ResponseWrapper responseWrapper = executeGETRequest(REVIEWS_URL, new String[][] { { "doc", packageName },
-		{ "sort", (sort == null) ? null : String.valueOf(sort.value) },
-		{ "o", (offset == null) ? null : String.valueOf(offset) },
-		{ "n", (numberOfResult == null) ? null : String.valueOf(numberOfResult) }});
+    public ReviewResponse reviews(String packageName, REVIEW_SORT sort, Integer offset, Integer numberOfResult)
+	    throws IOException {
+	ResponseWrapper responseWrapper = executeGETRequest(REVIEWS_URL,
+		new String[][] { { "doc", packageName }, { "sort", (sort == null) ? null : String.valueOf(sort.value) },
+			{ "o", (offset == null) ? null : String.valueOf(offset) },
+			{ "n", (numberOfResult == null) ? null : String.valueOf(numberOfResult) } });
 
 	return responseWrapper.getPayload().getReviewResponse();
+    }
+
+    /**
+     * Uploads device configuration to google server so that can
+     * be seen from web as a registered device!!
+     * 
+     * @see https://play.google.com/store/account
+     */
+    public UploadDeviceConfigResponse uploadDeviceConfig() throws Exception {
+
+	UploadDeviceConfigRequest request = UploadDeviceConfigRequest.newBuilder()
+		.setDeviceConfiguration(Utils.getDeviceConfigurationProto()).build();
+	ResponseWrapper responseWrapper = executePOSTRequest(UPLOADDEVICECONFIG_URL, request.toByteArray(),
+		"application/x-protobuf");
+	return responseWrapper.getPayload().getUploadDeviceConfigResponse();
     }
 
     /* =======================Helper Functions====================== */
@@ -457,11 +469,9 @@ public class GooglePlayAPI {
 		{ "X-DFE-Client-Id", "am-android-google" },
 		{ "User-Agent",
 			"Android-Finsky/3.7.13 (api=3,versionCode=8013013,sdk=16,device=crespo,hardware=herring,product=soju)" },
-		{ "X-DFE-SmallestScreenWidthDp", "320" },
-		{ "X-DFE-Filter-Level", "3" },
+		{ "X-DFE-SmallestScreenWidthDp", "320" }, { "X-DFE-Filter-Level", "3" },
 		{ "Host", "android.clients.google.com" },
-		{ "Content-Type",
-			(contentType != null) ? contentType : "application/x-www-form-urlencoded; charset=UTF-8" } };
+		{ "Content-Type", (contentType != null) ? contentType : "application/x-www-form-urlencoded; charset=UTF-8" } };
     }
 
     public String getToken() {

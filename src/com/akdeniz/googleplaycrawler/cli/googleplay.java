@@ -51,7 +51,7 @@ public class googleplay {
     private Namespace namespace;
 
     public static enum COMMAND {
-	LIST, DOWNLOAD, CHECKIN, CATEGORIES, SEARCH, PERMISSIONS, REVIEWS
+	LIST, DOWNLOAD, CHECKIN, CATEGORIES, SEARCH, PERMISSIONS, REVIEWS, REGISTER
     }
 
     private static final String LIST_HEADER = new StringJoiner(DELIMETER).add("Title").add("Package").add("Creator")
@@ -127,6 +127,10 @@ public class googleplay {
 		.help("offset to define where list begins");
 	reviewsParser.addArgument("-n", "--number").type(Integer.class).required(false)
 		.help("how many reviews will be listed");
+	
+	/* =================Register Arguments============== */
+	Subparser registerParser = subparsers.addParser("register", true).description("registers device so that can be seen from web!")
+		.setDefault("command", COMMAND.REGISTER);
     }
 
     public static void main(String[] args) throws Exception {
@@ -168,6 +172,9 @@ public class googleplay {
 	    case REVIEWS:
 		reviewsCommand();
 		break;
+	    case REGISTER:
+		registerCommand();
+		break;
 	    }
 	} catch (Exception e) {
 	    System.err.println(e.getMessage());
@@ -188,6 +195,12 @@ public class googleplay {
 	    System.out.println("No review found!");
 	}
 	System.out.println(response);
+    }
+    
+    private void registerCommand() throws Exception {
+	login();
+	service.uploadDeviceConfig();
+	System.out.println("A device is registered to your account! You can see it at \"https://play.google.com/store/account\" after a few downloads!");
     }
 
     private void permissionsCommand() throws Exception {
