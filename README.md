@@ -28,7 +28,7 @@ Take a look at code, it is not that sophisticated..
     java -jar googleplay.jar --help
     usage: googleplay [-h] [-f [CONF]] [-i [ANDROIDID]] [-e [EMAIL]]
                       [-p [PASSWORD]] [-a [HOST]] [-l [PORT]]
-                      {download,checkin,list,categories,search,permissions,reviews}
+                      {download,checkin,list,categories,search,permissions,reviews,register}
                       ...
 
     Play with Google Play API :)
@@ -54,7 +54,7 @@ Take a look at code, it is not that sophisticated..
     subcommands:
       Command to be executed.
     
-      {download,checkin,list,categories,search,permissions,reviews}
+      {download,checkin,list,categories,search,permissions,reviews,register}
 
 ### Sub-commands
 
@@ -95,8 +95,22 @@ If you don't want to use proxy, just comment proxy host and port!
 You can use this file like this:
 
     java -jar googleplay.jar --conf crawler.conf ...
+    
+### About Account Page Registration
+
+To see your chekined device at your account page(https://play.google.com/store/account), you should register it like this:
+
+    java -jar googleplay.jar -f crawler.conf register
+
+and **download a few application after registration!**(same behaviour of android market application!)
+
+Of course this does not allow you to click and download from web page! It is just for information right now!
+
+But I will see if I can simulate Android GCM(Google Cloud Messaging) push-in mechanism when I have time! So stay tuned.. ;)
 
 TODO
 ----
 Add other device properties to use with checkin.. (Tablet,.. etc.)
+
+Simulate Android GCM Push-in mechanism to allow download from web!
 
