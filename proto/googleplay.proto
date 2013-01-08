@@ -939,6 +939,7 @@ message Payload {
   optional AcceptTosResponse acceptTosResponse = 22;
   optional RateSuggestedContentResponse rateSuggestedContentResponse = 23;
   optional CheckPromoOfferResponse checkPromoOfferResponse = 24;
+  optional UploadDeviceConfigResponse uploadDeviceConfigResponse = 25;
 }
 message PreFetch {
   optional string url = 1;
@@ -1829,4 +1830,12 @@ message UninstallReasonRequestProto {
   optional int32 reason = 2;
 }
 message UninstallReasonResponseProto {
+}
+message UploadDeviceConfigRequest {
+	optional DeviceConfigurationProto deviceConfiguration = 1;
+	optional string manufacturer = 2;
+	optional string gcmRegistrationId = 3;
+}
+message UploadDeviceConfigResponse {
+	optional string uploadDeviceConfigToken = 1;
 }
