@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -13,6 +14,10 @@ import org.apache.http.HttpHost;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.mina.core.buffer.IoBuffer;
+import org.apache.mina.core.future.ConnectFuture;
+import org.apache.mina.core.future.WriteFuture;
+import org.apache.mina.core.session.IoSession;
 
 import com.akdeniz.googleplaycrawler.GooglePlayAPI;
 import com.akdeniz.googleplaycrawler.GooglePlayAPI.REVIEW_SORT;
@@ -29,6 +34,14 @@ import com.akdeniz.googleplaycrawler.Googleplay.ListResponse;
 import com.akdeniz.googleplaycrawler.Googleplay.Offer;
 import com.akdeniz.googleplaycrawler.Googleplay.ReviewResponse;
 import com.akdeniz.googleplaycrawler.Googleplay.SearchResponse;
+import com.akdeniz.googleplaycrawler.gsf.Gsf.BindAccountResponse;
+import com.akdeniz.googleplaycrawler.gsf.Gsf.LoginResponse;
+import com.akdeniz.googleplaycrawler.gsf.packets.BindAccountRequestPacket;
+import com.akdeniz.googleplaycrawler.gsf.packets.HeartBeatPacket;
+import com.akdeniz.googleplaycrawler.gsf.packets.LoginRequestPacket;
+import com.akdeniz.googleplaycrawler.gsf.MTalkConnector;
+import com.akdeniz.googleplaycrawler.gsf.MessageFilter;
+import com.akdeniz.googleplaycrawler.gsf.NotificationListener;
 import com.akdeniz.googleplaycrawler.Utils;
 
 import net.sourceforge.argparse4j.ArgumentParsers;
@@ -42,6 +55,11 @@ import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import net.sourceforge.argparse4j.inf.Subparsers;
 
+/**
+ * 
+ * @author akdeniz
+ *
+ */
 public class googleplay {
 
     private static final String DELIMETER = ";";
@@ -51,13 +69,15 @@ public class googleplay {
     private Namespace namespace;
 
     public static enum COMMAND {
-	LIST, DOWNLOAD, CHECKIN, CATEGORIES, SEARCH, PERMISSIONS, REVIEWS, REGISTER
+	LIST, DOWNLOAD, CHECKIN, CATEGORIES, SEARCH, PERMISSIONS, REVIEWS, REGISTER, USEGCM
     }
 
     private static final String LIST_HEADER = new StringJoiner(DELIMETER).add("Title").add("Package").add("Creator")
 	    .add("Price").add("Installation Size").add("Number Of Downloads").toString();
     private static final String CATEGORIES_HEADER = new StringJoiner(DELIMETER).add("ID").add("Name").toString();
-    private static final String SUBCATEGORIES_HEADER = new StringJoiner(DELIMETER).add("ID").add("Title").toString();;
+    private static final String SUBCATEGORIES_HEADER = new StringJoiner(DELIMETER).add("ID").add("Title").toString();
+
+    private static final int TIMEOUT = 10000;
 
     public googleplay() {
 	parser = ArgumentParsers.newArgumentParser("googleplay").description("Play with Google Play API :)");
@@ -74,6 +94,8 @@ public class googleplay {
 		.setDefault(FeatureControl.SUPPRESS);
 	parser.addArgument("-p", "--password").nargs("?").help("Password to be used for login.")
 		.setDefault(FeatureControl.SUPPRESS);
+	parser.addArgument("-t", "--securitytoken").nargs("?").help("Security token that was generated at checkin. It is only required for \"usegcm\" option")
+	.setDefault(FeatureControl.SUPPRESS);
 	parser.addArgument("-a", "--host").nargs("?").help("Proxy host").setDefault(FeatureControl.SUPPRESS);
 	parser.addArgument("-l", "--port").type(Integer.class).nargs("?").help("Proxy port")
 		.setDefault(FeatureControl.SUPPRESS);
@@ -86,8 +108,7 @@ public class googleplay {
 	downloadParser.addArgument("packagename").nargs("+").help("applications to download");
 
 	/* =================Check-In Arguments============== */
-	Subparser checkinParser = subparsers.addParser("checkin", true).description("checkin section!")
-		.setDefault("command", COMMAND.CHECKIN);
+	subparsers.addParser("checkin", true).description("checkin section!").setDefault("command", COMMAND.CHECKIN);
 
 	/* =================List Arguments============== */
 	Subparser listParser = subparsers.addParser("list", true)
@@ -129,8 +150,12 @@ public class googleplay {
 		.help("how many reviews will be listed");
 	
 	/* =================Register Arguments============== */
-	Subparser registerParser = subparsers.addParser("register", true).description("registers device so that can be seen from web!")
+	subparsers.addParser("register", true).description("registers device so that can be seen from web!")
 		.setDefault("command", COMMAND.REGISTER);
+	
+	/* =================UseGCM Arguments============== */
+	subparsers.addParser("usegcm", true).description("listens GCM(GoogleCloudMessaging) for download notification and downloads them!")
+		.setDefault("command", COMMAND.USEGCM);
     }
 
     public static void main(String[] args) throws Exception {
@@ -175,9 +200,79 @@ public class googleplay {
 	    case REGISTER:
 		registerCommand();
 		break;
+	    case USEGCM:
+		useGCMCommand();
+		break;
 	    }
 	} catch (Exception e) {
 	    System.err.println(e.getMessage());
+	    System.exit(-1);
+	}
+    }
+    
+    private void useGCMCommand() throws Exception {
+	String ac2dmAuth = loginAC2DM();
+	
+	MTalkConnector connector = new MTalkConnector(new NotificationListener(service));
+	ConnectFuture connectFuture = connector.connect();
+	connectFuture.await(TIMEOUT);
+	if (!connectFuture.isConnected()) {
+	    throw new IOException("Couldn't connect to GTALK server!");
+	}
+
+	final IoSession session = connectFuture.getSession();
+	send(session, IoBuffer.wrap(new byte[] { 0x07 })); // connection sanity check
+	System.out.println("Connected to server.");
+
+	String deviceIDStr = String.valueOf(new BigInteger(service.getAndroidID(), 16).longValue());
+	String securityTokenStr = String.valueOf(new BigInteger(service.getSecurityToken(), 16).longValue());
+	
+	LoginRequestPacket loginRequestPacket = new LoginRequestPacket(deviceIDStr, securityTokenStr, service.getAndroidID());
+	
+	LoginResponseFilter loginResponseFilter = new LoginResponseFilter(loginRequestPacket.getPacketID());
+	connector.addFilter(loginResponseFilter);
+	send(session, loginRequestPacket);
+	LoginResponse loginResponse = loginResponseFilter.nextMessage(TIMEOUT);
+	connector.removeFilter(loginResponseFilter);
+	if(loginResponse==null){
+	    throw new IllegalStateException("Login response could not be received!");
+	} else if(loginResponse.hasError()){
+	    throw new IllegalStateException(loginResponse.getError().getExtension(0).getMessage());
+	}
+	System.out.println("Autheticated.");
+
+	BindAccountRequestPacket bindAccountRequestPacket = new BindAccountRequestPacket(service.getEmail(), ac2dmAuth);
+	
+	BindAccountResponseFilter barf = new BindAccountResponseFilter(bindAccountRequestPacket.getPacketID());
+	connector.addFilter(barf);
+	send(session, bindAccountRequestPacket);
+	BindAccountResponse bindAccountResponse = barf.nextMessage(TIMEOUT);
+	connector.removeFilter(barf);
+	
+	/*if(bindAccountResponse==null){
+	    throw new IllegalStateException("Account bind response could not be received!");
+	} else if(bindAccountResponse.hasError()){
+	    throw new IllegalStateException(bindAccountResponse.getError().getExtension(0).getMessage());
+	}*/
+
+	System.out.println("Listening for notifications from server..");
+	
+	// send heart beat packets to keep connection up.
+	while (true) {
+	    send(session, new HeartBeatPacket());
+	    Thread.sleep(30000);
+	}
+    }
+    
+    private static void send(IoSession session, Object object) throws InterruptedException, IOException {
+	WriteFuture writeFuture = session.write(object);
+	writeFuture.await(TIMEOUT);
+	if (!writeFuture.isWritten()) {
+	    Throwable exception = writeFuture.getException();
+	    if(exception!=null){
+		throw new IOException("Error occured while writing!", exception);
+	    }
+	    throw new IOException("Error occured while writing!");
 	}
     }
 
@@ -255,6 +350,7 @@ public class googleplay {
 
 	System.out.println("Your account succesfully checkined!");
 	System.out.println("AndroidID : " + service.getAndroidID());
+	System.out.println("SecurityToken : " + service.getSecurityToken());
     }
 
     private void login() throws Exception {
@@ -280,6 +376,39 @@ public class googleplay {
 		createLoginableService(androidid, email, password);
 		service.login();
 		return;
+	    }
+	}
+
+	throw new GooglePlayException("Lack of information for login!");
+    }
+    
+    private String loginAC2DM() throws Exception {
+	String androidid = namespace.getString("androidid");
+	String email = namespace.getString("email");
+	String password = namespace.getString("password");
+	String securityToken = namespace.getString("securitytoken");
+
+	if (androidid != null && email != null && password != null && securityToken!=null) {
+	    createLoginableService(androidid, email, password);
+	    service.login();
+	    service.setSecurityToken(securityToken);
+	    return service.loginAC2DM();
+	}
+
+	if (namespace.getAttrs().containsKey("conf")) {
+	    Properties properties = new Properties();
+	    properties.load(new FileInputStream(namespace.getString("conf")));
+
+	    androidid = properties.getProperty("androidid");
+	    email = properties.getProperty("email");
+	    password = properties.getProperty("password");
+	    securityToken = properties.getProperty("securitytoken");
+
+	    if (androidid != null && email != null && password != null && securityToken!=null) {
+		createLoginableService(androidid, email, password);
+		service.login();
+		service.setSecurityToken(securityToken);
+		return service.loginAC2DM();
 	    }
 	}
 
@@ -391,7 +520,7 @@ public class googleplay {
     }
 
     private static HttpClient getProxiedHttpClient(String host, Integer port) throws Exception {
-	HttpClient client = new DefaultHttpClient();
+	HttpClient client = new DefaultHttpClient(GooglePlayAPI.getConnectionManager());
 	client.getConnectionManager().getSchemeRegistry().register(Utils.getMockedScheme());
 	HttpHost proxy = new HttpHost(host, port);
 	client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
@@ -481,5 +610,33 @@ class StringJoiner {
 	    builder.append(delimeter).append(iter.next());
 	}
 	return builder.toString();
+    }
+}
+
+class LoginResponseFilter extends MessageFilter<LoginResponse>{
+    private String id;
+
+    public LoginResponseFilter(String id) {
+	super(LoginResponse.class);
+	this.id = id;
+    }
+    
+    @Override
+    protected boolean accept(LoginResponse message) {
+	return id.equals(message.getPacketid());
+    }
+}
+
+class BindAccountResponseFilter extends MessageFilter<BindAccountResponse>{
+    private String id;
+
+    public BindAccountResponseFilter(String id) {
+	super(BindAccountResponse.class);
+	this.id = id;
+    }
+    
+    @Override
+    protected boolean accept(BindAccountResponse message) {
+	return id.equals(message.getPacketid());
     }
 }

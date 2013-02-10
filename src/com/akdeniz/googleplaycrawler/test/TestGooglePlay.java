@@ -42,6 +42,7 @@ public class TestGooglePlay {
 	service.login();
 	System.out.println("SubAuthToken : " + service.getToken());
 	System.out.println("AndroidId : " + service.getAndroidID());
+	System.out.println("SecurityToken : "+ service.getSecurityToken());
 	
 	service.uploadDeviceConfig();
 

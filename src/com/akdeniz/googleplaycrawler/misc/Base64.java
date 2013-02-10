@@ -1,4 +1,4 @@
-package com.akdeniz.googleplaycrawler;
+package com.akdeniz.googleplaycrawler.misc;
 /*
  * Copyright (C) 2010 The Android Open Source Project
  *

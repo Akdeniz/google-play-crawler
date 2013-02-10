@@ -17,8 +17,11 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.impl.conn.SchemeRegistryFactory;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.akdeniz.googleplaycrawler.Googleplay.AndroidAppDeliveryData;
@@ -85,6 +88,7 @@ public class GooglePlayAPI {
     private String email;
     private String password;
     private HttpClient client;
+    private String securityToken;
 
     /**
      * Default constructor. ANDROID ID and Authentication token must be supplied
@@ -107,9 +111,21 @@ public class GooglePlayAPI {
      * using other abilities.
      */
     public GooglePlayAPI(String email, String password) {
-	this.email = email;
+	this.setEmail(email);
 	this.password = password;
-	setClient(new DefaultHttpClient());
+	setClient(new DefaultHttpClient(getConnectionManager()));
+    }
+
+    /**
+     * Connection manager to allow concurrent connections.
+     * @return {@link ClientConnectionManager} instance
+     */
+    public static ClientConnectionManager getConnectionManager() {
+	PoolingClientConnectionManager connManager = 
+		new PoolingClientConnectionManager( SchemeRegistryFactory.createDefault());
+	connManager.setMaxTotal(100);
+	connManager.setDefaultMaxPerRoute(30);
+	return connManager;
     }
 
     /**
@@ -126,22 +142,31 @@ public class GooglePlayAPI {
 	// this first checkin is for generating android-id
 	AndroidCheckinResponse checkinResponse = postCheckin(Utils.generateAndroidCheckinRequest().toByteArray());
 	this.setAndroidID(BigInteger.valueOf(checkinResponse.getAndroidId()).toString(16));
-	String securityToken = (BigInteger.valueOf(checkinResponse.getSecurityToken()).toString(16));
+	setSecurityToken((BigInteger.valueOf(checkinResponse.getSecurityToken()).toString(16)));
 
-	HttpEntity c2dmResponseEntity = executePost(URL_LOGIN, new String[][] { { "Email", this.email },
+	String c2dmAuth = loginAC2DM();
+
+	AndroidCheckinRequest.Builder checkInbuilder = AndroidCheckinRequest.newBuilder(Utils.generateAndroidCheckinRequest());
+
+	AndroidCheckinRequest build = checkInbuilder.setId(new BigInteger(this.getAndroidID(), 16).longValue())
+		.setSecurityToken(new BigInteger(getSecurityToken(), 16).longValue()).addAccountCookie("[" + getEmail() + "]")
+		.addAccountCookie(c2dmAuth).build();
+	// this is the second checkin to match credentials with android-id
+	return postCheckin(build.toByteArray());
+    }
+    
+    /**
+     * Logins AC2DM server and returns authentication string.
+     */
+    public String loginAC2DM() throws IOException{
+	HttpEntity c2dmResponseEntity = executePost(URL_LOGIN, new String[][] { { "Email", this.getEmail() },
 		{ "Passwd", this.password }, { "service", "ac2dm" }, { "accountType", ACCOUNT_TYPE_HOSTED_OR_GOOGLE },
 		{ "has_permission", "1" }, { "source", "android" }, { "app", "com.google.android.gsf" },
 		{ "device_country", "us" }, { "device_country", "us" }, { "lang", "en" }, { "sdk_version", "16" }, }, null);
 
 	Map<String, String> c2dmAuth = Utils.parseResponse(new String(Utils.readAll(c2dmResponseEntity.getContent())));
+	return c2dmAuth.get("Auth");
 
-	AndroidCheckinRequest.Builder checkInbuilder = AndroidCheckinRequest.newBuilder(Utils.generateAndroidCheckinRequest());
-
-	AndroidCheckinRequest build = checkInbuilder.setId(new BigInteger(this.getAndroidID(), 16).longValue())
-		.setSecurityToken(new BigInteger(securityToken, 16).longValue()).addAccountCookie("[" + email + "]")
-		.addAccountCookie(c2dmAuth.get("Auth")).build();
-	// this is the second checkin to match credentials with android-id
-	return postCheckin(build.toByteArray());
     }
 
     /**
@@ -159,7 +184,7 @@ public class GooglePlayAPI {
      */
     public void login() throws Exception {
 
-	HttpEntity responseEntity = executePost(URL_LOGIN, new String[][] { { "Email", this.email }, { "Passwd", this.password },
+	HttpEntity responseEntity = executePost(URL_LOGIN, new String[][] { { "Email", this.getEmail() }, { "Passwd", this.password },
 		{ "service", "androidmarket" }, { "accountType", ACCOUNT_TYPE_HOSTED_OR_GOOGLE }, { "has_permission", "1" },
 		{ "source", "android" }, { "androidId", this.getAndroidID() }, { "app", "com.android.vending" },
 		{ "device_country", "en" }, { "lang", "en" }, { "sdk_version", "16" }, }, null);
@@ -297,7 +322,7 @@ public class GooglePlayAPI {
     /**
      * Fetches url content by executing GET request with provided cookie string.
      */
-    private InputStream executeDownload(String url, String cookie) throws IOException {
+    public InputStream executeDownload(String url, String cookie) throws IOException {
 
 	String[][] headerParams = new String[][] { { "Cookie", cookie },
 		{ "User-Agent", "AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)" }, };
@@ -496,12 +521,36 @@ public class GooglePlayAPI {
 	this.androidID = androidID;
     }
 
+    public String getSecurityToken() {
+	return securityToken;
+    }
+
+    public void setSecurityToken(String securityToken) {
+	this.securityToken = securityToken;
+    }
+
     public HttpClient getClient() {
 	return client;
     }
 
+    /**
+     * Sets {@link HttpClient} instance for internal usage of GooglePlayAPI.
+     * It is important to note that this instance should allow concurrent connections.
+     * 
+     * @see getConnectionManager
+     * 
+     * @param client
+     */
     public void setClient(HttpClient client) {
 	this.client = client;
+    }
+
+    public String getEmail() {
+	return email;
+    }
+
+    public void setEmail(String email) {
+	this.email = email;
     }
 
 }
