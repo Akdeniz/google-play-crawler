@@ -3,6 +3,8 @@ Google Play Crawler JAVA API
 
 google-play-crawler is simply for searching android applications on GooglePlay, and also downloading them.
 
+Now you can dowload applications with single click from web to your desktop. 
+
 It also has checkin ability to generate ANDROID-ID for you. 
 
 While doing checkin with your account, it uses Galaxy S3 properties. So only Galaxy S3 compatible applications will be retrieved.
@@ -16,8 +18,6 @@ Motivated users can add other device properties from here : http://www.glbenchma
 
 This project is available thanks to this project : https://github.com/egirault/googleplay-api. 
 
-All the protobuf research in Google Play API belongs to them.
-
 
 Take a look at code, it is not that sophisticated..
 
@@ -27,8 +27,9 @@ Take a look at code, it is not that sophisticated..
 
     java -jar googleplay.jar --help
     usage: googleplay [-h] [-f [CONF]] [-i [ANDROIDID]] [-e [EMAIL]]
-                      [-p [PASSWORD]] [-a [HOST]] [-l [PORT]]
-                      {download,checkin,list,categories,search,permissions,reviews,register}
+                      [-p [PASSWORD]] [-t [SECURITYTOKEN]] [-a [HOST]] 
+                      [-l [PORT]]
+                      {download,checkin,list,categories,search,permissions,reviews,register,usegcm}
                       ...
 
     Play with Google Play API :)
@@ -46,6 +47,9 @@ Take a look at code, it is not that sophisticated..
                              Email address to be used for login.
       -p [PASSWORD], --password [PASSWORD]
                              Password to be used for login.
+      -t [SECURITYTOKEN], --securitytoken [SECURITYTOKEN]
+                            Security token that was generated at checkin. It
+                            is only required for "usegcm" option
       -a [HOST], --host [HOST]
                              Proxy host
       -l [PORT], --port [PORT]
@@ -54,7 +58,7 @@ Take a look at code, it is not that sophisticated..
     subcommands:
       Command to be executed.
     
-      {download,checkin,list,categories,search,permissions,reviews,register}
+      {download,checkin,list,categories,search,permissions,reviews,register, usegcm}
 
 ### Sub-commands
 
@@ -87,6 +91,8 @@ If you don't want to use proxy, just comment proxy host and port!
     email = xxxxxxxxx@gmail.com
     password = xxxxxxxxx
     androidid = xxxxxxxxxxxxxxxx
+    # security token only needed for "usegcm" option
+    securitytoken = xxxxxxxx
     
     # Proxy Information
     host=localhost
@@ -95,6 +101,8 @@ If you don't want to use proxy, just comment proxy host and port!
 You can use this file like this:
 
     java -jar googleplay.jar --conf crawler.conf ...
+
+Note that "usegcm" option does not operate on HTTP, so it won't be proxified by this configuration.  
     
 ### About Account Page Registration
 
@@ -104,13 +112,53 @@ To see your chekined device at your account page(https://play.google.com/store/a
 
 and **download a few application after registration!**(same behaviour of android market application!)
 
-Of course this does not allow you to click and download from web page! It is just for information right now!
+~~Of course this does not allow you to click and download from web page! It is just for information right now!~~
 
-But I will see if I can simulate Android GCM(Google Cloud Messaging) push-in mechanism when I have time! So stay tuned.. ;)
+~~But I will see if I can simulate Android GCM(Google Cloud Messaging) push-in mechanism when I have time! So stay tuned.. ;)~~
+
+### About "usegcm" Option
+
+You can use ``usegcm`` option to download applications from web to your desktop like installing to your phone.
+
+All you have to do register your checkined device as described above and execute google-play-crawler like this:
+
+    java -jar googleplay.jar -f crawler.conf usegcm
+
+Now you can login to your account from web browser and try to install any application.
+
 
 TODO
 ----
 Add other device properties to use with checkin.. (Tablet,.. etc.)
 
-Simulate Android GCM Push-in mechanism to allow download from web!
+~~Simulate Android GCM Push-in mechanism to allow download from web!~~
 
+License
+----
+    Copyright (c) 2012, Akdeniz
+    All rights reserved.
+    
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met: 
+    
+    1. Redistributions of source code must retain the above copyright notice, this
+    list of conditions and the following disclaimer. 
+    2. Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the following disclaimer in the documentation
+    and/or other materials provided with the distribution. 
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+    ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+    ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+    ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    
+    The views and conclusions contained in the software and documentation are those
+    of the authors and should not be interpreted as representing official policies, 
+    either expressed or implied, of the FreeBSD Project.
+    
