@@ -61,6 +61,7 @@ public class GooglePlayAPI {
 
     private static final String CHECKIN_URL = "https://android.clients.google.com/checkin";
     private static final String URL_LOGIN = "https://android.clients.google.com/auth";
+    private static final String C2DM_REGISTER_URL = "https://android.clients.google.com/c2dm/register2";
     private static final String FDFE_URL = "https://android.clients.google.com/fdfe/";
     private static final String LIST_URL = FDFE_URL + "list";
     private static final String BROWSE_URL = FDFE_URL + "browse";
@@ -167,6 +168,14 @@ public class GooglePlayAPI {
 	Map<String, String> c2dmAuth = Utils.parseResponse(new String(Utils.readAll(c2dmResponseEntity.getContent())));
 	return c2dmAuth.get("Auth");
 
+    }
+    
+    public Map<String, String> c2dmRegister(String application, String sender) throws IOException{
+	
+	String c2dmAuth = loginAC2DM();
+	String[][]  data = new String[][]{{"app", application},{"sender", sender}, {"device", new BigInteger(this.getAndroidID(), 16).toString()}};
+	HttpEntity responseEntity = executePost(C2DM_REGISTER_URL, data, getHeaderParameters(c2dmAuth, null));
+	return Utils.parseResponse(new String(Utils.readAll(responseEntity.getContent())));
     }
 
     /**
@@ -372,7 +381,7 @@ public class GooglePlayAPI {
      * */
     private ResponseWrapper executeGETRequest(String path, String[][] datapost) throws IOException {
 
-	HttpEntity httpEntity = executeGet(path, datapost, getHeaderParameters(null));
+	HttpEntity httpEntity = executeGet(path, datapost, getHeaderParameters(this.getToken(),null));
 	return Googleplay.ResponseWrapper.parseFrom(httpEntity.getContent());
 
     }
@@ -385,7 +394,7 @@ public class GooglePlayAPI {
      * */
     private ResponseWrapper executePOSTRequest(String path, String[][] datapost) throws IOException {
 
-	HttpEntity httpEntity = executePost(path, datapost, getHeaderParameters(null));
+	HttpEntity httpEntity = executePost(path, datapost, getHeaderParameters(this.getToken(), null));
 	return Googleplay.ResponseWrapper.parseFrom(httpEntity.getContent());
 
     }
@@ -396,7 +405,7 @@ public class GooglePlayAPI {
      */
     private ResponseWrapper executePOSTRequest(String url, byte[] datapost, String contentType) throws IOException {
 
-	HttpEntity httpEntity = executePost(url, new ByteArrayEntity(datapost), getHeaderParameters(contentType));
+	HttpEntity httpEntity = executePost(url, new ByteArrayEntity(datapost), getHeaderParameters(this.getToken(), contentType));
 	return Googleplay.ResponseWrapper.parseFrom(httpEntity.getContent());
 
     }
@@ -487,11 +496,11 @@ public class GooglePlayAPI {
      * Gets header parameters for GET/POST requests. If no content type is
      * given, default one is used!
      */
-    private String[][] getHeaderParameters(String contentType) {
+    private String[][] getHeaderParameters( String token, String contentType ) {
 
 	return new String[][] {
 		{ "Accept-Language", "en-EN" },
-		{ "Authorization", "GoogleLogin auth=" + this.getToken() },
+		{ "Authorization", "GoogleLogin auth=" + token },
 		{ "X-DFE-Enabled-Experiments", "cl:billing.select_add_instrument_by_default" },
 		{
 			"X-DFE-Unsupported-Experiments",
@@ -499,7 +508,7 @@ public class GooglePlayAPI {
 		{ "X-DFE-Device-Id", this.getAndroidID() },
 		{ "X-DFE-Client-Id", "am-android-google" },
 		{ "User-Agent",
-			"Android-Finsky/3.7.13 (api=3,versionCode=8013013,sdk=16,device=crespo,hardware=herring,product=soju)" },
+			"Android-Finsky/3.10.14 (api=3,versionCode=8016014,sdk=15,device=GT-I9300,hardware=aries,product=GT-I9300)" },
 		{ "X-DFE-SmallestScreenWidthDp", "320" }, { "X-DFE-Filter-Level", "3" },
 		{ "Host", "android.clients.google.com" },
 		{ "Content-Type", (contentType != null) ? contentType : "application/x-www-form-urlencoded; charset=UTF-8" } };
