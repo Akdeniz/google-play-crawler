@@ -4,6 +4,7 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -40,7 +41,7 @@ public class MTalkConnector extends AbstractIoHandler {
     private volatile int lastStreamID = 0;
     private static Object mutex = new Object();
 
-    private List<MessageFilter> filters = Collections.synchronizedList(new ArrayList<MessageFilter>());
+    private List<MessageFilter> filters = new ArrayList<MessageFilter>();
     private NotificationListener notificationListener;
 
     public MTalkConnector(NotificationListener notificationListener) {
@@ -72,8 +73,11 @@ public class MTalkConnector extends AbstractIoHandler {
 		return;
 	    }
 
-	    for (MessageFilter filter : filters) {
-		filter.add(msg);
+	    synchronized (filters) {
+		for (ListIterator<MessageFilter> filterIter = filters.listIterator(); filterIter.hasNext(); ) {
+			MessageFilter filter = filterIter.next();
+			filter.add(msg);
+		}
 	    }
 
 	    if (msg instanceof DataMessageStanza) {
@@ -102,11 +106,15 @@ public class MTalkConnector extends AbstractIoHandler {
     }
 
     public <T extends Message> void addFilter(MessageFilter<T> filter) {
-	filters.add(filter);
+	synchronized (filters) {
+	    filters.add(filter);	    
+	}
     }
 
     public <T extends Message> void removeFilter(MessageFilter<T> filter) {
-	filters.remove(filter);
+	synchronized (filters) {
+	    filters.remove(filter);	    
+	}
     }
 
     private SslFilter getSSLFilter() {
