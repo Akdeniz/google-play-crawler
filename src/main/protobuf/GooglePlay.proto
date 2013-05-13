@@ -1,3 +1,7 @@
+option java_package = "com.google.play.api";
+
+import "GoogleFrameworkServices.proto";
+
 message AckNotificationResponse {
 }
 message AndroidAppDeliveryData {
@@ -386,25 +390,6 @@ message DetailsResponse {
   optional Review userReview = 3;
   optional DocV2 docV2 = 4;
   optional string footerHtml = 5;
-}
-message DeviceConfigurationProto {
-  optional int32 touchScreen = 1;
-  optional int32 keyboard = 2;
-  optional int32 navigation = 3;
-  optional int32 screenLayout = 4;
-  optional bool hasHardKeyboard = 5;
-  optional bool hasFiveWayNavigation = 6;
-  optional int32 screenDensity = 7;
-  optional int32 glEsVersion = 8;
-  repeated string systemSharedLibrary = 9;
-  repeated string systemAvailableFeature = 10;
-  repeated string nativePlatform = 11;
-  optional int32 screenWidth = 12;
-  optional int32 screenHeight = 13;
-  repeated string systemSupportedLocale = 14;
-  repeated string glExtension = 15;
-  optional int32 deviceClass = 16;
-  optional int32 maxApkDownloadSizeMb = 17;
 }
 message Document {
   optional Docid docid = 1;
@@ -796,6 +781,10 @@ message LibraryAppDetails {
   optional int64 refundTimeoutTimestampMsec = 3;
   optional int64 postDeliveryRefundWindowMsec = 4;
 }
+message LibraryInAppDetails {
+    optional string signedPurchaseData = 1;
+    optional string signature = 2;
+}
 message LibraryMutation {
   optional Docid docid = 1;
   optional int32 offerType = 2;
@@ -803,6 +792,7 @@ message LibraryMutation {
   optional bool deleted = 4;
   optional LibraryAppDetails appDetails = 5;
   optional LibrarySubscriptionDetails subscriptionDetails = 6;
+  optional LibraryInAppDetails inAppDetails = 7;
 }
 message LibrarySubscriptionDetails {
   optional int64 initiationTimestampMsec = 1;
@@ -823,6 +813,7 @@ message ClientLibraryState {
   optional bytes serverToken = 2;
   optional int64 hashCodeSum = 3;
   optional int32 librarySize = 4;
+  optional string libraryId = 5;
 }
 message LibraryReplicationRequest {
   repeated ClientLibraryState libraryState = 1;
@@ -999,6 +990,14 @@ message SearchResponse {
   repeated Bucket bucket = 4;
   repeated DocV2 doc = 5;
   repeated RelatedSearch relatedSearch = 6;
+}
+message UploadDeviceConfigRequest {
+  optional DeviceConfigurationProto deviceConfiguration = 1;
+  optional string manufacturer = 2;
+  optional string gcmRegistrationId = 3;
+}
+message UploadDeviceConfigResponse {
+  optional string uploadDeviceConfigToken = 1;
 }
 message CorpusMetadata {
   optional int32 backend = 1;
@@ -1832,97 +1831,4 @@ message UninstallReasonRequestProto {
 }
 message UninstallReasonResponseProto {
 }
-message UploadDeviceConfigRequest {
-	optional DeviceConfigurationProto deviceConfiguration = 1;
-	optional string manufacturer = 2;
-	optional string gcmRegistrationId = 3;
-}
-message UploadDeviceConfigResponse {
-	optional string uploadDeviceConfigToken = 1;
-}
-message AndroidCheckinRequest {
-  optional string imei = 1;
-  optional int64 id = 2;
-  optional string digest = 3;
-  optional AndroidCheckinProto checkin = 4;
-  optional string desiredBuild = 5;
-  optional string locale = 6;
-  optional int64 loggingId = 7;
-  optional string marketCheckin = 8;
-  repeated string macAddr = 9;
-  optional string meid = 10;
-  repeated string accountCookie = 11;
-  optional string timeZone = 12;
-  optional fixed64 securityToken = 13;
-  optional int32 version = 14;
-  repeated string otaCert = 15;
-  optional string serialNumber = 16;
-  optional string esn = 17;
-  optional DeviceConfigurationProto deviceConfiguration = 18;
-  repeated string macAddrType = 19;
-  optional int32 fragment = 20;
-  optional string userName = 21;
-}
-message AndroidCheckinResponse {
-  optional bool statsOk = 1;
-  repeated AndroidIntentProto intent = 2;
-  optional int64 timeMsec = 3;
-  optional string digest = 4;
-  repeated GservicesSetting setting = 5;
-  optional bool marketOk = 6;
-  optional fixed64 androidId = 7;
-  optional fixed64 securityToken = 8;
-  optional bool settingsDiff = 9;
-  repeated string deleteSetting = 10;
-}
-message GservicesSetting {
-  optional bytes name = 1;
-  optional bytes value = 2;
-}
-message AndroidBuildProto {
-  optional string id = 1;
-  optional string product = 2;
-  optional string carrier = 3;
-  optional string radio = 4;
-  optional string bootloader = 5;
-  optional string client = 6;
-  optional int64 timestamp = 7;
-  optional int32 googleServices = 8;
-  optional string device = 9;
-  optional int32 sdkVersion = 10;
-  optional string model = 11;
-  optional string manufacturer = 12;
-  optional string buildProduct = 13;
-  optional bool otaInstalled = 14;
-}
-message AndroidCheckinProto {
-  optional AndroidBuildProto build = 1;
-  optional int64 lastCheckinMsec = 2;
-  repeated AndroidEventProto event = 3;
-  repeated AndroidStatisticProto stat = 4;
-  repeated string requestedGroup = 5;
-  optional string cellOperator = 6;
-  optional string simOperator = 7;
-  optional string roaming = 8;
-  optional int32 userNumber = 9;
-}
-message AndroidEventProto {
-  optional string tag = 1;
-  optional string value = 2;
-  optional int64 timeMsec = 3;
-}
-message AndroidIntentProto {
-  optional string action = 1;
-  optional string dataUri = 2;
-  optional string mimeType = 3;
-  optional string javaClass = 4;
-  repeated group Extra = 5 {
-    optional string name = 6;
-    optional string value = 7;
-  }
-}
-message AndroidStatisticProto {
-  optional string tag = 1;
-  optional int32 count = 2;
-  optional float sum = 3;
-}
+
