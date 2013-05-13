@@ -21,6 +21,29 @@ This project is available thanks to this project : https://github.com/egirault/g
 
 Take a look at code, it is not that sophisticated..
 
+## Building and running
+
+Make sure you hava protoc installed.
+On OSX:
+```
+brew install protobuf
+```
+
+Ubuntu/Debian:
+```
+sudo apt-get install protobuf-compiler libprotobuf-java
+```
+
+Install SBT:
+http://www.scala-sbt.org/release/docs/Getting-Started/Setup.html
+
+To build:
+```
+sbt assembly
+```
+Note: This will generate the protobuf java files and compile them as part of the project.
+
+
 ## Usage
 
 ### General
