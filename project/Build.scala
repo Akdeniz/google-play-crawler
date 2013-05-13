@@ -51,9 +51,6 @@ object Build extends Build {
       "org.apache.httpcomponents" % "httpmime" % "4.2.2",
       "org.apache.mina" % "mina-core" % "2.0.7",
       "org.slf4j" % "slf4j-simple" % "1.7.2"
-      ),
-    resolvers ++= Seq(
-      "Sonatype Snapshots" at " https://oss.sonatype.org/content/repositories/snapshots" //Squeryl
-    )
+      )
   ) 
 }
