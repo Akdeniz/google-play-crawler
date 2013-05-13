@@ -18,8 +18,9 @@ object Build extends Build {
 
   lazy val marketCrawlerSettings = Defaults.defaultSettings ++ assemblySettings ++ PB.protobufSettings ++ Seq(
     name         := projectName,
-    version := ver,
-    aggregate := false,
+    version      := ver,
+    autoScalaLibrary := false,
+    aggregate    := false,
     jarName in assembly := projectName + "-" + ver + ".jar",
     mainClass in assembly := Some("com.akdeniz.googleplaycrawler.cli.googleplay"),
     mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) =>
