@@ -41,7 +41,7 @@ object Build extends Build {
         case _ => MergeStrategy.deduplicate
       }
     },
-    version in PB.protobufConfig := "2.5.0",
+    version in PB.protobufConfig := "2.4.1",
     libraryDependencies ++= Seq(
       "org.apache.httpcomponents" % "httpclient" % "4.2.2",
       "commons-logging" % "commons-logging" % "1.1.1",
