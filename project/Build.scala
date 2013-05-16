@@ -10,7 +10,7 @@ object Versions {
 }
 
 object Build extends Build {
-
+  
   lazy val google_play = Project("PlayAPI", file("."), settings =  marketCrawlerSettings)
   
   val projectName = "PlayAPI"
@@ -19,9 +19,9 @@ object Build extends Build {
   lazy val marketCrawlerSettings = Defaults.defaultSettings ++ assemblySettings ++ PB.protobufSettings ++ Seq(
     name         := projectName,
     version      := ver,
-    autoScalaLibrary := false,
     aggregate    := false,
     jarName in assembly := projectName + "-" + ver + ".jar",
+    autoScalaLibrary in assembly <<=  (autoScalaLibrary in Global),
     mainClass in assembly := Some("com.akdeniz.googleplaycrawler.cli.googleplay"),
     mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) =>
       {
@@ -41,7 +41,7 @@ object Build extends Build {
         case _ => MergeStrategy.deduplicate
       }
     },
-    version in PB.protobufConfig := "2.4.1",
+    version in PB.protobufConfig := "2.5.0",
     libraryDependencies ++= Seq(
       "org.apache.httpcomponents" % "httpclient" % "4.2.2",
       "commons-logging" % "commons-logging" % "1.1.1",
