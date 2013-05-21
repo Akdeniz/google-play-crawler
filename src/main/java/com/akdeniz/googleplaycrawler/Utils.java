@@ -23,10 +23,10 @@ import javax.net.ssl.TrustManager;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 
-import com.akdeniz.googleplaycrawler.Googleplay.AndroidBuildProto;
-import com.akdeniz.googleplaycrawler.Googleplay.AndroidCheckinProto;
-import com.akdeniz.googleplaycrawler.Googleplay.AndroidCheckinRequest;
-import com.akdeniz.googleplaycrawler.Googleplay.DeviceConfigurationProto;
+import com.akdeniz.googleplaycrawler.GooglePlay.AndroidBuildProto;
+import com.akdeniz.googleplaycrawler.GooglePlay.AndroidCheckinProto;
+import com.akdeniz.googleplaycrawler.GooglePlay.AndroidCheckinRequest;
+import com.akdeniz.googleplaycrawler.GooglePlay.DeviceConfigurationProto;
 import com.akdeniz.googleplaycrawler.misc.Base64;
 import com.akdeniz.googleplaycrawler.misc.DummyX509TrustManager;
 

@@ -2,8 +2,8 @@ package com.akdeniz.googleplaycrawler.gsf.packets;
 
 import java.nio.ByteBuffer;
 
-import com.akdeniz.googleplaycrawler.gsf.Gsf.Extension;
-import com.akdeniz.googleplaycrawler.gsf.Gsf.IQStanza;
+import com.akdeniz.googleplaycrawler.gsf.GoogleServicesFramework.Extension;
+import com.akdeniz.googleplaycrawler.gsf.GoogleServicesFramework.IQStanza;
 
 /**
  * This packets notifies that server notification stream has received and used

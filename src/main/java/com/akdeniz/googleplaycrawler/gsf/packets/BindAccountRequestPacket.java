@@ -3,7 +3,7 @@ package com.akdeniz.googleplaycrawler.gsf.packets;
 import java.nio.ByteBuffer;
 import java.util.Random;
 
-import com.akdeniz.googleplaycrawler.gsf.Gsf.BindAccountRequest;
+import com.akdeniz.googleplaycrawler.gsf.GoogleServicesFramework.BindAccountRequest;
 
 /**
  * 

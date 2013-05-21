@@ -24,22 +24,22 @@ import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.impl.conn.SchemeRegistryFactory;
 import org.apache.http.message.BasicNameValuePair;
 
-import com.akdeniz.googleplaycrawler.Googleplay.AndroidAppDeliveryData;
-import com.akdeniz.googleplaycrawler.Googleplay.AndroidCheckinRequest;
-import com.akdeniz.googleplaycrawler.Googleplay.AndroidCheckinResponse;
-import com.akdeniz.googleplaycrawler.Googleplay.BrowseResponse;
-import com.akdeniz.googleplaycrawler.Googleplay.BulkDetailsRequest;
-import com.akdeniz.googleplaycrawler.Googleplay.BulkDetailsRequest.Builder;
-import com.akdeniz.googleplaycrawler.Googleplay.BulkDetailsResponse;
-import com.akdeniz.googleplaycrawler.Googleplay.BuyResponse;
-import com.akdeniz.googleplaycrawler.Googleplay.DetailsResponse;
-import com.akdeniz.googleplaycrawler.Googleplay.HttpCookie;
-import com.akdeniz.googleplaycrawler.Googleplay.ListResponse;
-import com.akdeniz.googleplaycrawler.Googleplay.ResponseWrapper;
-import com.akdeniz.googleplaycrawler.Googleplay.ReviewResponse;
-import com.akdeniz.googleplaycrawler.Googleplay.SearchResponse;
-import com.akdeniz.googleplaycrawler.Googleplay.UploadDeviceConfigRequest;
-import com.akdeniz.googleplaycrawler.Googleplay.UploadDeviceConfigResponse;
+import com.akdeniz.googleplaycrawler.GooglePlay.AndroidAppDeliveryData;
+import com.akdeniz.googleplaycrawler.GooglePlay.AndroidCheckinRequest;
+import com.akdeniz.googleplaycrawler.GooglePlay.AndroidCheckinResponse;
+import com.akdeniz.googleplaycrawler.GooglePlay.BrowseResponse;
+import com.akdeniz.googleplaycrawler.GooglePlay.BulkDetailsRequest;
+import com.akdeniz.googleplaycrawler.GooglePlay.BulkDetailsRequest.Builder;
+import com.akdeniz.googleplaycrawler.GooglePlay.BulkDetailsResponse;
+import com.akdeniz.googleplaycrawler.GooglePlay.BuyResponse;
+import com.akdeniz.googleplaycrawler.GooglePlay.DetailsResponse;
+import com.akdeniz.googleplaycrawler.GooglePlay.HttpCookie;
+import com.akdeniz.googleplaycrawler.GooglePlay.ListResponse;
+import com.akdeniz.googleplaycrawler.GooglePlay.ResponseWrapper;
+import com.akdeniz.googleplaycrawler.GooglePlay.ReviewResponse;
+import com.akdeniz.googleplaycrawler.GooglePlay.SearchResponse;
+import com.akdeniz.googleplaycrawler.GooglePlay.UploadDeviceConfigRequest;
+import com.akdeniz.googleplaycrawler.GooglePlay.UploadDeviceConfigResponse;
 
 /**
  * This class provides
@@ -382,7 +382,7 @@ public class GooglePlayAPI {
     private ResponseWrapper executeGETRequest(String path, String[][] datapost) throws IOException {
 
 	HttpEntity httpEntity = executeGet(path, datapost, getHeaderParameters(this.getToken(),null));
-	return Googleplay.ResponseWrapper.parseFrom(httpEntity.getContent());
+	return GooglePlay.ResponseWrapper.parseFrom(httpEntity.getContent());
 
     }
 
@@ -395,7 +395,7 @@ public class GooglePlayAPI {
     private ResponseWrapper executePOSTRequest(String path, String[][] datapost) throws IOException {
 
 	HttpEntity httpEntity = executePost(path, datapost, getHeaderParameters(this.getToken(), null));
-	return Googleplay.ResponseWrapper.parseFrom(httpEntity.getContent());
+	return GooglePlay.ResponseWrapper.parseFrom(httpEntity.getContent());
 
     }
 
@@ -406,7 +406,7 @@ public class GooglePlayAPI {
     private ResponseWrapper executePOSTRequest(String url, byte[] datapost, String contentType) throws IOException {
 
 	HttpEntity httpEntity = executePost(url, new ByteArrayEntity(datapost), getHeaderParameters(this.getToken(), contentType));
-	return Googleplay.ResponseWrapper.parseFrom(httpEntity.getContent());
+	return GooglePlay.ResponseWrapper.parseFrom(httpEntity.getContent());
 
     }
 

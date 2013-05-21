@@ -12,12 +12,12 @@ import org.apache.mina.filter.codec.ProtocolDecoderOutput;
 import org.apache.mina.filter.codec.ProtocolEncoder;
 import org.apache.mina.filter.codec.ProtocolEncoderOutput;
 
-import com.akdeniz.googleplaycrawler.gsf.Gsf.BindAccountResponse;
-import com.akdeniz.googleplaycrawler.gsf.Gsf.Close;
-import com.akdeniz.googleplaycrawler.gsf.Gsf.DataMessageStanza;
-import com.akdeniz.googleplaycrawler.gsf.Gsf.HeartbeatAck;
-import com.akdeniz.googleplaycrawler.gsf.Gsf.IQStanza;
-import com.akdeniz.googleplaycrawler.gsf.Gsf.LoginResponse;
+import com.akdeniz.googleplaycrawler.gsf.GoogleServicesFramework.BindAccountResponse;
+import com.akdeniz.googleplaycrawler.gsf.GoogleServicesFramework.Close;
+import com.akdeniz.googleplaycrawler.gsf.GoogleServicesFramework.DataMessageStanza;
+import com.akdeniz.googleplaycrawler.gsf.GoogleServicesFramework.HeartbeatAck;
+import com.akdeniz.googleplaycrawler.gsf.GoogleServicesFramework.IQStanza;
+import com.akdeniz.googleplaycrawler.gsf.GoogleServicesFramework.LoginResponse;
 import com.akdeniz.googleplaycrawler.gsf.packets.Packet;
 import com.akdeniz.googleplaycrawler.gsf.packets.UnknownResponse;
 /**

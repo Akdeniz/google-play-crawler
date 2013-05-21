@@ -15,10 +15,10 @@ import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.ssl.SslFilter;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 
-import com.akdeniz.googleplaycrawler.Googleplay.Notification;
-import com.akdeniz.googleplaycrawler.gsf.Gsf.AppData;
-import com.akdeniz.googleplaycrawler.gsf.Gsf.Close;
-import com.akdeniz.googleplaycrawler.gsf.Gsf.DataMessageStanza;
+import com.akdeniz.googleplaycrawler.GooglePlay.Notification;
+import com.akdeniz.googleplaycrawler.gsf.GoogleServicesFramework.AppData;
+import com.akdeniz.googleplaycrawler.gsf.GoogleServicesFramework.Close;
+import com.akdeniz.googleplaycrawler.gsf.GoogleServicesFramework.DataMessageStanza;
 import com.akdeniz.googleplaycrawler.gsf.packets.NotificationPacket;
 import com.akdeniz.googleplaycrawler.gsf.packets.UnknownResponse;
 import com.akdeniz.googleplaycrawler.misc.Base64;

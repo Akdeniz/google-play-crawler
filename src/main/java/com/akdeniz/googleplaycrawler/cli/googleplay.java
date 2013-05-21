@@ -22,20 +22,20 @@ import org.apache.mina.core.session.IoSession;
 import com.akdeniz.googleplaycrawler.GooglePlayAPI;
 import com.akdeniz.googleplaycrawler.GooglePlayAPI.REVIEW_SORT;
 import com.akdeniz.googleplaycrawler.GooglePlayException;
-import com.akdeniz.googleplaycrawler.Googleplay.AppDetails;
-import com.akdeniz.googleplaycrawler.Googleplay.BrowseLink;
-import com.akdeniz.googleplaycrawler.Googleplay.BrowseResponse;
-import com.akdeniz.googleplaycrawler.Googleplay.BulkDetailsEntry;
-import com.akdeniz.googleplaycrawler.Googleplay.BulkDetailsResponse;
-import com.akdeniz.googleplaycrawler.Googleplay.DetailsResponse;
-import com.akdeniz.googleplaycrawler.Googleplay.DocV2;
-import com.akdeniz.googleplaycrawler.Googleplay.GetReviewsResponse;
-import com.akdeniz.googleplaycrawler.Googleplay.ListResponse;
-import com.akdeniz.googleplaycrawler.Googleplay.Offer;
-import com.akdeniz.googleplaycrawler.Googleplay.ReviewResponse;
-import com.akdeniz.googleplaycrawler.Googleplay.SearchResponse;
-import com.akdeniz.googleplaycrawler.gsf.Gsf.BindAccountResponse;
-import com.akdeniz.googleplaycrawler.gsf.Gsf.LoginResponse;
+import com.akdeniz.googleplaycrawler.GooglePlay.AppDetails;
+import com.akdeniz.googleplaycrawler.GooglePlay.BrowseLink;
+import com.akdeniz.googleplaycrawler.GooglePlay.BrowseResponse;
+import com.akdeniz.googleplaycrawler.GooglePlay.BulkDetailsEntry;
+import com.akdeniz.googleplaycrawler.GooglePlay.BulkDetailsResponse;
+import com.akdeniz.googleplaycrawler.GooglePlay.DetailsResponse;
+import com.akdeniz.googleplaycrawler.GooglePlay.DocV2;
+import com.akdeniz.googleplaycrawler.GooglePlay.GetReviewsResponse;
+import com.akdeniz.googleplaycrawler.GooglePlay.ListResponse;
+import com.akdeniz.googleplaycrawler.GooglePlay.Offer;
+import com.akdeniz.googleplaycrawler.GooglePlay.ReviewResponse;
+import com.akdeniz.googleplaycrawler.GooglePlay.SearchResponse;
+import com.akdeniz.googleplaycrawler.gsf.GoogleServicesFramework.BindAccountResponse;
+import com.akdeniz.googleplaycrawler.gsf.GoogleServicesFramework.LoginResponse;
 import com.akdeniz.googleplaycrawler.gsf.packets.BindAccountRequestPacket;
 import com.akdeniz.googleplaycrawler.gsf.packets.HeartBeatPacket;
 import com.akdeniz.googleplaycrawler.gsf.packets.LoginRequestPacket;
@@ -206,6 +206,7 @@ public class googleplay {
 	    }
 	} catch (Exception e) {
 	    System.err.println(e.getMessage());
+	    e.printStackTrace();
 	    System.exit(-1);
 	}
     }

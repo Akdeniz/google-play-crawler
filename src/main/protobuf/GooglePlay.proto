@@ -1,9 +1,7 @@
-option java_package = "com.google.play.api";
+option java_package = "com.akdeniz.googleplaycrawler";
 
-import "GoogleFrameworkServices.proto";
+import "GoogleServicesFramework.proto";
 
-message AckNotificationResponse {
-}
 message AndroidAppDeliveryData {
   optional int64 downloadSize = 1;
   optional string signature = 2;
@@ -194,54 +192,7 @@ message PurchaseStatusResponse {
   optional Instrument rejectedInstrument = 7;
   optional AndroidAppDeliveryData appDeliveryData = 8;
 }
-message CheckInstrumentResponse {
-  optional bool userHasValidInstrument = 1;
-  optional bool checkoutTokenRequired = 2;
-  repeated Instrument instrument = 4;
-  repeated Instrument eligibleInstrument = 5;
-}
-message UpdateInstrumentRequest {
-  optional Instrument instrument = 1;
-  optional string checkoutToken = 2;
-}
-message UpdateInstrumentResponse {
-  optional int32 result = 1;
-  optional string instrumentId = 2;
-  optional string userMessageHtml = 3;
-  repeated InputValidationError errorInputField = 4;
-  optional bool checkoutTokenRequired = 5;
-  optional RedeemedPromoOffer redeemedOffer = 6;
-}
-message InitiateAssociationResponse {
-  optional string userToken = 1;
-}
-message VerifyAssociationResponse {
-  optional int32 status = 1;
-  optional Address billingAddress = 2;
-  optional CarrierTos carrierTos = 3;
-}
-message AddCreditCardPromoOffer {
-  optional string headerText = 1;
-  optional string descriptionHtml = 2;
-  optional Image image = 3;
-  optional string introductoryTextHtml = 4;
-  optional string offerTitle = 5;
-  optional string noActionDescription = 6;
-  optional string termsAndConditionsHtml = 7;
-}
-message AvailablePromoOffer {
-  optional AddCreditCardPromoOffer addCreditCardOffer = 1;
-}
-message CheckPromoOfferResponse {
-  repeated AvailablePromoOffer availableOffer = 1;
-  optional RedeemedPromoOffer redeemedOffer = 2;
-  optional bool checkoutTokenRequired = 3;
-}
-message RedeemedPromoOffer {
-  optional string headerText = 1;
-  optional string descriptionHtml = 2;
-  optional Image image = 3;
-}
+
 message Docid {
   optional string backendDocid = 1;
   optional int32 type = 2;
@@ -361,8 +312,7 @@ message ContainerMetadata {
   optional string analyticsCookie = 5;
   optional bool ordered = 6;
 }
-message FlagContentResponse {
-}
+
 message DebugInfo {
   repeated string message = 1;
   repeated group Timing = 2 {
@@ -370,10 +320,7 @@ message DebugInfo {
     optional double timeInMs = 4;
   }
 }
-message DeliveryResponse {
-  optional int32 status = 1;
-  optional AndroidAppDeliveryData appDeliveryData = 2;
-}
+
 message BulkDetailsEntry {
   optional DocV2 doc = 1;
 }
@@ -390,6 +337,25 @@ message DetailsResponse {
   optional Review userReview = 3;
   optional DocV2 docV2 = 4;
   optional string footerHtml = 5;
+}
+message DeviceConfigurationProto {
+  optional int32 touchScreen = 1;
+  optional int32 keyboard = 2;
+  optional int32 navigation = 3;
+  optional int32 screenLayout = 4;
+  optional bool hasHardKeyboard = 5;
+  optional bool hasFiveWayNavigation = 6;
+  optional int32 screenDensity = 7;
+  optional int32 glEsVersion = 8;
+  repeated string systemSharedLibrary = 9;
+  repeated string systemAvailableFeature = 10;
+  repeated string nativePlatform = 11;
+  optional int32 screenWidth = 12;
+  optional int32 screenHeight = 13;
+  repeated string systemSupportedLocale = 14;
+  repeated string glExtension = 15;
+  optional int32 deviceClass = 16;
+  optional int32 maxApkDownloadSizeMb = 17;
 }
 message Document {
   optional Docid docid = 1;
@@ -444,28 +410,7 @@ message TranslatedText {
   optional string sourceLocale = 2;
   optional string targetLocale = 3;
 }
-message Badge {
-  optional string title = 1;
-  repeated Image image = 2;
-  optional string browseUrl = 3;
-}
-message ContainerWithBanner {
-  optional string colorThemeArgb = 1;
-}
-message DealOfTheDay {
-  optional string featuredHeader = 1;
-  optional string colorThemeArgb = 2;
-}
-message EditorialSeriesContainer {
-  optional string seriesTitle = 1;
-  optional string seriesSubtitle = 2;
-  optional string episodeTitle = 3;
-  optional string episodeSubtitle = 4;
-  optional string colorThemeArgb = 5;
-}
-message Link {
-  optional string uri = 1;
-}
+
 message PlusOneData {
   optional bool setByUser = 1;
   optional int64 total = 2;
@@ -476,53 +421,7 @@ message PlusPerson {
   optional string displayName = 2;
   optional string profileImageUrl = 4;
 }
-message PromotedDoc {
-  optional string title = 1;
-  optional string subtitle = 2;
-  repeated Image image = 3;
-  optional string descriptionHtml = 4;
-  optional string detailsUrl = 5;
-}
-message Reason {
-  optional string briefReason = 1;
-  optional string detailedReason = 2;
-  optional string uniqueId = 3;
-}
-message SectionMetadata {
-  optional string header = 1;
-  optional string listUrl = 2;
-  optional string browseUrl = 3;
-  optional string descriptionHtml = 4;
-}
-message SeriesAntenna {
-  optional string seriesTitle = 1;
-  optional string seriesSubtitle = 2;
-  optional string episodeTitle = 3;
-  optional string episodeSubtitle = 4;
-  optional string colorThemeArgb = 5;
-  optional SectionMetadata sectionTracks = 6;
-  optional SectionMetadata sectionAlbums = 7;
-}
-message Template {
-  optional SeriesAntenna seriesAntenna = 1;
-  optional TileTemplate tileGraphic2X1 = 2;
-  optional TileTemplate tileGraphic4X2 = 3;
-  optional TileTemplate tileGraphicColoredTitle2X1 = 4;
-  optional TileTemplate tileGraphicUpperLeftTitle2X1 = 5;
-  optional TileTemplate tileDetailsReflectedGraphic2X2 = 6;
-  optional TileTemplate tileFourBlock4X2 = 7;
-  optional ContainerWithBanner containerWithBanner = 8;
-  optional DealOfTheDay dealOfTheDay = 9;
-  optional TileTemplate tileGraphicColoredTitle4X2 = 10;
-  optional EditorialSeriesContainer editorialSeriesContainer = 11;
-}
-message TileTemplate {
-  optional string colorThemeArgb = 1;
-  optional string colorTextArgb = 2;
-}
-message Warning {
-  optional string localizedMessage = 1;
-}
+
 message AlbumDetails {
   optional string name = 1;
   optional MusicDetails details = 2;
@@ -687,25 +586,7 @@ message DocV1 {
   optional PlusOneData plusOneData = 16;
   optional string warningMessage = 17;
 }
-message Annotations {
-  optional SectionMetadata sectionRelated = 1;
-  optional SectionMetadata sectionMoreBy = 2;
-  optional PlusOneData plusOneData = 3;
-  repeated Warning warning = 4;
-  optional SectionMetadata sectionBodyOfWork = 5;
-  optional SectionMetadata sectionCoreContent = 6;
-  optional Template template = 7;
-  repeated Badge badgeForCreator = 8;
-  repeated Badge badgeForDoc = 9;
-  optional Link link = 10;
-  optional SectionMetadata sectionCrossSell = 11;
-  optional SectionMetadata sectionRelatedDocType = 12;
-  repeated PromotedDoc promotedDoc = 13;
-  optional string offerNote = 14;
-  repeated DocV2 subscription = 16;
-  optional Reason reason = 17;
-  optional string privacyPolicyUrl = 18;
-}
+
 message DocV2 {
   optional string docid = 1;
   optional string backendDocid = 2;
@@ -721,7 +602,7 @@ message DocV2 {
   optional ContainerMetadata containerMetadata = 12;
   optional DocumentDetails details = 13;
   optional AggregateRating aggregateRating = 14;
-  optional Annotations annotations = 15;
+
   optional string detailsUrl = 16;
   optional string shareUrl = 17;
   optional string reviewsUrl = 18;
@@ -808,31 +689,7 @@ message LibraryUpdate {
   optional bool hasMore = 5;
   optional string libraryId = 6;
 }
-message ClientLibraryState {
-  optional int32 corpus = 1;
-  optional bytes serverToken = 2;
-  optional int64 hashCodeSum = 3;
-  optional int32 librarySize = 4;
-  optional string libraryId = 5;
-}
-message LibraryReplicationRequest {
-  repeated ClientLibraryState libraryState = 1;
-}
-message LibraryReplicationResponse {
-  repeated LibraryUpdate update = 1;
-}
-message ClickLogEvent {
-  optional int64 eventTime = 1;
-  optional string url = 2;
-  optional string listId = 3;
-  optional string referrerUrl = 4;
-  optional string referrerListId = 5;
-}
-message LogRequest {
-  repeated ClickLogEvent clickEvent = 1;
-}
-message LogResponse {
-}
+
 message AndroidAppNotificationData {
   optional int32 versionCode = 1;
   optional string assetId = 2;
@@ -874,10 +731,7 @@ message UserNotificationData {
   optional string dialogTitle = 4;
   optional string dialogText = 5;
 }
-message PlusOneResponse {
-}
-message RateSuggestedContentResponse {
-}
+
 message AggregateRating {
   optional int32 type = 1;
   optional float starRating = 2;
@@ -892,44 +746,15 @@ message AggregateRating {
   optional uint64 commentCount = 11;
   optional double bayesianMeanRating = 12;
 }
-message DirectPurchase {
-  optional string detailsUrl = 1;
-  optional string purchaseDocid = 2;
-  optional string parentDocid = 3;
-  optional int32 offerType = 4;
-}
-message ResolveLinkResponse {
-  optional string detailsUrl = 1;
-  optional string browseUrl = 2;
-  optional string searchUrl = 3;
-  optional DirectPurchase directPurchase = 4;
-  optional string homeUrl = 5;
-}
 message Payload {
   optional ListResponse listResponse = 1;
   optional DetailsResponse detailsResponse = 2;
   optional ReviewResponse reviewResponse = 3;
   optional BuyResponse buyResponse = 4;
   optional SearchResponse searchResponse = 5;
-  optional TocResponse tocResponse = 6;
   optional BrowseResponse browseResponse = 7;
   optional PurchaseStatusResponse purchaseStatusResponse = 8;
-  optional UpdateInstrumentResponse updateInstrumentResponse = 9;
-  optional LogResponse logResponse = 10;
-  optional CheckInstrumentResponse checkInstrumentResponse = 11;
-  optional PlusOneResponse plusOneResponse = 12;
-  optional FlagContentResponse flagContentResponse = 13;
-  optional AckNotificationResponse ackNotificationResponse = 14;
-  optional InitiateAssociationResponse initiateAssociationResponse = 15;
-  optional VerifyAssociationResponse verifyAssociationResponse = 16;
-  optional LibraryReplicationResponse libraryReplicationResponse = 17;
-  optional RevokeResponse revokeResponse = 18;
   optional BulkDetailsResponse bulkDetailsResponse = 19;
-  optional ResolveLinkResponse resolveLinkResponse = 20;
-  optional DeliveryResponse deliveryResponse = 21;
-  optional AcceptTosResponse acceptTosResponse = 22;
-  optional RateSuggestedContentResponse rateSuggestedContentResponse = 23;
-  optional CheckPromoOfferResponse checkPromoOfferResponse = 24;
   optional UploadDeviceConfigResponse uploadDeviceConfigResponse = 25;
   optional AndroidCheckinResponse androidCheckinResponse = 26;
 }
@@ -968,14 +793,23 @@ message Review {
   optional string deviceName = 19;
   optional string replyText = 29;
   optional int64 replyTimestampMsec = 30;
+  optional Author author = 31;
+}
+message Author {
+  optional string name = 2;
+  optional Avatar urls = 5;
+}
+message Avatar {
+  optional bool unknown1 = 1;
+  optional string url = 5;
+  optional string secureUrl = 7;
+  optional bool unknown2 = 9;
 }
 message ReviewResponse {
   optional GetReviewsResponse getResponse = 1;
   optional string nextPageUrl = 2;
 }
-message RevokeResponse {
-  optional LibraryUpdate libraryUpdate = 1;
-}
+
 message RelatedSearch {
   optional string searchUrl = 1;
   optional string header = 2;
@@ -991,844 +825,169 @@ message SearchResponse {
   repeated DocV2 doc = 5;
   repeated RelatedSearch relatedSearch = 6;
 }
+
+
 message UploadDeviceConfigRequest {
-  optional DeviceConfigurationProto deviceConfiguration = 1;
-  optional string manufacturer = 2;
-  optional string gcmRegistrationId = 3;
+	optional DeviceConfigurationProto deviceConfiguration = 1;
+	optional string manufacturer = 2;
+	optional string gcmRegistrationId = 3;
 }
 message UploadDeviceConfigResponse {
-  optional string uploadDeviceConfigToken = 1;
+	optional string uploadDeviceConfigToken = 1;
 }
-message CorpusMetadata {
-  optional int32 backend = 1;
-  optional string name = 2;
-  optional string landingUrl = 3;
-  optional string libraryName = 4;
+message AndroidCheckinRequest {
+  optional string imei = 1;
+  optional int64 id = 2;
+  optional string digest = 3;
+  optional AndroidCheckinProto checkin = 4;
+  optional string desiredBuild = 5;
+  optional string locale = 6;
+  optional int64 loggingId = 7;
+  optional string marketCheckin = 8;
+  repeated string macAddr = 9;
+  optional string meid = 10;
+  repeated string accountCookie = 11;
+  optional string timeZone = 12;
+  optional fixed64 securityToken = 13;
+  optional int32 version = 14;
+  repeated string otaCert = 15;
+  optional string serialNumber = 16;
+  optional string esn = 17;
+  optional DeviceConfigurationProto deviceConfiguration = 18;
+  repeated string macAddrType = 19;
+  optional int32 fragment = 20;
+  optional string userName = 21;
+  optional int32 userSerialNumber = 22;
 }
-message Experiments {
-  repeated string experimentId = 1;
+message AndroidCheckinResponse {
+  optional bool statsOk = 1;
+  repeated AndroidIntentProto intent = 2;
+  optional int64 timeMsec = 3;
+  optional string digest = 4;
+  repeated GservicesSetting setting = 5;
+  optional bool marketOk = 6;
+  optional fixed64 androidId = 7;
+  optional fixed64 securityToken = 8;
+  optional bool settingsDiff = 9;
+  repeated string deleteSetting = 10;
 }
-message TocResponse {
-  repeated CorpusMetadata corpus = 1;
-  optional int32 tosVersionDeprecated = 2;
-  optional string tosContent = 3;
-  optional string homeUrl = 4;
-  optional Experiments experiments = 5;
-  optional string tosCheckboxTextMarketingEmails = 6;
-  optional string tosToken = 7;
-  optional UserSettings userSettings = 8;
-  optional string iconOverrideUrl = 9;
+message GservicesSetting {
+  optional bytes name = 1;
+  optional bytes value = 2;
 }
-message UserSettings {
-  optional bool tosCheckboxMarketingEmailsOptedIn = 1;
+message AndroidBuildProto {
+  optional string id = 1;
+  optional string product = 2;
+  optional string carrier = 3;
+  optional string radio = 4;
+  optional string bootloader = 5;
+  optional string client = 6;
+  optional int64 timestamp = 7;
+  optional int32 googleServices = 8;
+  optional string device = 9;
+  optional int32 sdkVersion = 10;
+  optional string model = 11;
+  optional string manufacturer = 12;
+  optional string buildProduct = 13;
+  optional bool otaInstalled = 14;
 }
-message AcceptTosResponse {
+message AndroidCheckinProto {
+  optional AndroidBuildProto build = 1;
+  optional int64 lastCheckinMsec = 2;
+  repeated AndroidEventProto event = 3;
+  repeated AndroidStatisticProto stat = 4;
+  repeated string requestedGroup = 5;
+  optional string cellOperator = 6;
+  optional string simOperator = 7;
+  optional string roaming = 8;
+  optional int32 userNumber = 9;
 }
-message AckNotificationsRequestProto {
-  repeated string notificationId = 1;
-  optional SignatureHashProto signatureHash = 2;
-  repeated string nackNotificationId = 3;
-}
-message AckNotificationsResponseProto {
-}
-message AddressProto {
-  optional string address1 = 1;
-  optional string address2 = 2;
-  optional string city = 3;
-  optional string state = 4;
-  optional string postalCode = 5;
-  optional string country = 6;
-  optional string name = 7;
-  optional string type = 8;
-  optional string phone = 9;
-}
-message AppDataProto {
-  optional string key = 1;
+message AndroidEventProto {
+  optional string tag = 1;
   optional string value = 2;
+  optional int64 timeMsec = 3;
 }
-message AppSuggestionProto {
-  optional ExternalAssetProto assetInfo = 1;
-}
-message AssetIdentifierProto {
-  optional string packageName = 1;
-  optional int32 versionCode = 2;
-  optional string assetId = 3;
-}
-message AssetsRequestProto {
-  optional int32 assetType = 1;
-  optional string query = 2;
-  optional string categoryId = 3;
-  repeated string assetId = 4;
-  optional bool retrieveVendingHistory = 5;
-  optional bool retrieveExtendedInfo = 6;
-  optional int32 sortOrder = 7;
-  optional int64 startIndex = 8;
-  optional int64 numEntries = 9;
-  optional int32 viewFilter = 10;
-  optional string rankingType = 11;
-  optional bool retrieveCarrierChannel = 12;
-  repeated string pendingDownloadAssetId = 13;
-  optional bool reconstructVendingHistory = 14;
-  optional bool unfilteredResults = 15;
-  repeated string badgeId = 16;
-}
-message AssetsResponseProto {
-  repeated ExternalAssetProto asset = 1;
-  optional int64 numTotalEntries = 2;
-  optional string correctedQuery = 3;
-  repeated ExternalAssetProto altAsset = 4;
-  optional int64 numCorrectedEntries = 5;
-  optional string header = 6;
-  optional int32 listType = 7;
-}
-message BillingEventRequestProto {
-  optional int32 eventType = 1;
-  optional string billingParametersId = 2;
-  optional bool resultSuccess = 3;
-  optional string clientMessage = 4;
-  optional ExternalCarrierBillingInstrumentProto carrierInstrument = 5;
-}
-message BillingEventResponseProto {
-}
-message BillingParameterProto {
-  optional string id = 1;
-  optional string name = 2;
-  repeated string mncMcc = 3;
-  repeated string backendUrl = 4;
-  optional string iconId = 5;
-  optional int32 billingInstrumentType = 6;
-  optional string applicationId = 7;
-  optional string tosUrl = 8;
-  optional bool instrumentTosRequired = 9;
-  optional int32 apiVersion = 10;
-  optional bool perTransactionCredentialsRequired = 11;
-  optional bool sendSubscriberIdWithCarrierBillingRequests = 12;
-  optional int32 deviceAssociationMethod = 13;
-  optional string userTokenRequestMessage = 14;
-  optional string userTokenRequestAddress = 15;
-  optional bool passphraseRequired = 16;
-}
-message CarrierBillingCredentialsProto {
-  optional string credentials = 1;
-  optional int64 credentialsTimeout = 2;
-}
-message CategoryProto {
-  optional int32 assetType = 2;
-  optional string categoryId = 3;
-  optional string categoryDisplay = 4;
-  optional string categorySubtitle = 5;
-  repeated string promotedAssetsNew = 6;
-  repeated string promotedAssetsHome = 7;
-  repeated CategoryProto subCategories = 8;
-  repeated string promotedAssetsPaid = 9;
-  repeated string promotedAssetsFree = 10;
-}
-message CheckForNotificationsRequestProto {
-  optional int64 alarmDuration = 1;
-}
-message CheckForNotificationsResponseProto {
-}
-message CheckLicenseRequestProto {
-  optional string packageName = 1;
-  optional int32 versionCode = 2;
-  optional int64 nonce = 3;
-}
-message CheckLicenseResponseProto {
-  optional int32 responseCode = 1;
-  optional string signedData = 2;
-  optional string signature = 3;
-}
-message CommentsRequestProto {
-  optional string assetId = 1;
-  optional int64 startIndex = 2;
-  optional int64 numEntries = 3;
-  optional bool shouldReturnSelfComment = 4;
-  optional string assetReferrer = 5;
-}
-message CommentsResponseProto {
-  repeated ExternalCommentProto comment = 1;
-  optional int64 numTotalEntries = 2;
-  optional ExternalCommentProto selfComment = 3;
-}
-message ContentSyncRequestProto {
-  optional bool incremental = 1;
-  repeated group AssetInstallState = 2 {
-    optional string assetId = 3;
-    optional int32 assetState = 4;
-    optional int64 installTime = 5;
-    optional int64 uninstallTime = 6;
-    optional string packageName = 7;
-    optional int32 versionCode = 8;
-    optional string assetReferrer = 9;
-  }
-  repeated group SystemApp = 10 {
-    optional string packageName = 11;
-    optional int32 versionCode = 12;
-    repeated string certificateHash = 13;
-  }
-  optional int32 sideloadedAppCount = 14;
-}
-message ContentSyncResponseProto {
-  optional int32 numUpdatesAvailable = 1;
-}
-message DataMessageProto {
-  optional string category = 1;
-  repeated AppDataProto appData = 3;
-}
-message DownloadInfoProto {
-  optional int64 apkSize = 1;
-  repeated FileMetadataProto additionalFile = 2;
-}
-message ExternalAssetProto {
-  optional string id = 1;
-  optional string title = 2;
-  optional int32 assetType = 3;
-  optional string owner = 4;
-  optional string version = 5;
-  optional string price = 6;
-  optional string averageRating = 7;
-  optional int64 numRatings = 8;
-  optional group PurchaseInformation = 9 {
-    optional int64 purchaseTime = 10;
-    optional int64 refundTimeoutTime = 11;
-    optional int32 refundStartPolicy = 45;
-    optional int64 refundWindowDuration = 46;
-  }
-  optional group ExtendedInfo = 12 {
-    optional string description = 13;
-    optional int64 downloadCount = 14;
-    repeated string applicationPermissionId = 15;
-    optional int64 requiredInstallationSize = 16;
-    optional string packageName = 17;
-    optional string category = 18;
-    optional bool forwardLocked = 19;
-    optional string contactEmail = 20;
-    optional bool everInstalledByUser = 21;
-    optional string downloadCountString = 23;
-    optional string contactPhone = 26;
-    optional string contactWebsite = 27;
-    optional bool nextPurchaseRefundable = 28;
-    optional int32 numScreenshots = 30;
-    optional string promotionalDescription = 31;
-    optional int32 serverAssetState = 34;
-    optional int32 contentRatingLevel = 36;
-    optional string contentRatingString = 37;
-    optional string recentChanges = 38;
-    repeated group PackageDependency = 39 {
-      optional string packageName = 41;
-      optional bool skipPermissions = 42;
-    }
-    optional string videoLink = 43;
-    optional DownloadInfoProto downloadInfo = 49;
-  }
-  optional string ownerId = 22;
-  optional string packageName = 24;
-  optional int32 versionCode = 25;
-  optional bool bundledAsset = 29;
-  optional string priceCurrency = 32;
-  optional int64 priceMicros = 33;
-  optional string filterReason = 35;
-  optional string actualSellerPrice = 40;
-  repeated ExternalBadgeProto appBadge = 47;
-  repeated ExternalBadgeProto ownerBadge = 48;
-}
-message ExternalBadgeImageProto {
-  optional int32 usage = 1;
-  optional string url = 2;
-}
-message ExternalBadgeProto {
-  optional string localizedTitle = 1;
-  optional string localizedDescription = 2;
-  repeated ExternalBadgeImageProto badgeImage = 3;
-  optional string searchId = 4;
-}
-message ExternalCarrierBillingInstrumentProto {
-  optional string instrumentKey = 1;
-  optional string subscriberIdentifier = 2;
-  optional string accountType = 3;
-  optional string subscriberCurrency = 4;
-  optional uint64 transactionLimit = 5;
-  optional string subscriberName = 6;
-  optional string address1 = 7;
-  optional string address2 = 8;
-  optional string city = 9;
-  optional string state = 10;
-  optional string postalCode = 11;
-  optional string country = 12;
-  optional EncryptedSubscriberInfo encryptedSubscriberInfo = 13;
-}
-message ExternalCommentProto {
-  optional string body = 1;
-  optional int32 rating = 2;
-  optional string creatorName = 3;
-  optional int64 creationTime = 4;
-  optional string creatorId = 5;
-}
-message ExternalCreditCard {
-  optional string type = 1;
-  optional string lastDigits = 2;
-  optional int32 expYear = 3;
-  optional int32 expMonth = 4;
-  optional string personName = 5;
-  optional string countryCode = 6;
-  optional string postalCode = 7;
-  optional bool makeDefault = 8;
-  optional string address1 = 9;
-  optional string address2 = 10;
-  optional string city = 11;
-  optional string state = 12;
-  optional string phone = 13;
-}
-message ExternalPaypalInstrumentProto {
-  optional string instrumentKey = 1;
-  optional string preapprovalKey = 2;
-  optional string paypalEmail = 3;
-  optional AddressProto paypalAddress = 4;
-  optional bool multiplePaypalInstrumentsSupported = 5;
-}
-message FileMetadataProto {
-  optional int32 fileType = 1;
-  optional int32 versionCode = 2;
-  optional int64 size = 3;
-  optional string downloadUrl = 4;
-}
-message GetAddressSnippetRequestProto {
-  optional EncryptedSubscriberInfo encryptedSubscriberInfo = 1;
-}
-message GetAddressSnippetResponseProto {
-  optional string addressSnippet = 1;
-}
-message GetAssetRequestProto {
-  optional string assetId = 1;
-  optional string directDownloadKey = 2;
-}
-message GetAssetResponseProto {
-  optional group InstallAsset = 1 {
-    optional string assetId = 2;
-    optional string assetName = 3;
-    optional string assetType = 4;
-    optional string assetPackage = 5;
-    optional string blobUrl = 6;
-    optional string assetSignature = 7;
-    optional int64 assetSize = 8;
-    optional int64 refundTimeoutMillis = 9;
-    optional bool forwardLocked = 10;
-    optional bool secured = 11;
-    optional int32 versionCode = 12;
-    optional string downloadAuthCookieName = 13;
-    optional string downloadAuthCookieValue = 14;
-    optional int64 postInstallRefundWindowMillis = 16;
-  }
-  repeated FileMetadataProto additionalFile = 15;
-}
-message GetCarrierInfoRequestProto {
-}
-message GetCarrierInfoResponseProto {
-  optional bool carrierChannelEnabled = 1;
-  optional bytes carrierLogoIcon = 2;
-  optional bytes carrierBanner = 3;
-  optional string carrierSubtitle = 4;
-  optional string carrierTitle = 5;
-  optional int32 carrierImageDensity = 6;
-}
-message GetCategoriesRequestProto {
-  optional bool prefetchPromoData = 1;
-}
-message GetCategoriesResponseProto {
-  repeated CategoryProto categories = 1;
-}
-message GetImageRequestProto {
-  optional string assetId = 1;
-  optional int32 imageUsage = 3;
-  optional string imageId = 4;
-  optional int32 screenPropertyWidth = 5;
-  optional int32 screenPropertyHeight = 6;
-  optional int32 screenPropertyDensity = 7;
-  optional int32 productType = 8;
-}
-message GetImageResponseProto {
-  optional bytes imageData = 1;
-  optional int32 imageDensity = 2;
-}
-message GetMarketMetadataRequestProto {
-  optional int64 lastRequestTime = 1;
-  optional DeviceConfigurationProto deviceConfiguration = 2;
-  optional bool deviceRoaming = 3;
-  repeated string marketSignatureHash = 4;
-  optional int32 contentRating = 5;
-  optional string deviceModelName = 6;
-  optional string deviceManufacturerName = 7;
-}
-message GetMarketMetadataResponseProto {
-  optional int32 latestClientVersionCode = 1;
-  optional string latestClientUrl = 2;
-  optional bool paidAppsEnabled = 3;
-  repeated BillingParameterProto billingParameter = 4;
-  optional bool commentPostEnabled = 5;
-  optional bool billingEventsEnabled = 6;
-  optional string warningMessage = 7;
-  optional bool inAppBillingEnabled = 8;
-  optional int32 inAppBillingMaxApiVersion = 9;
-}
-message GetSubCategoriesRequestProto {
-  optional int32 assetType = 1;
-}
-message GetSubCategoriesResponseProto {
-  repeated group SubCategory = 1 {
-    optional string subCategoryDisplay = 2;
-    optional string subCategoryId = 3;
+message AndroidIntentProto {
+  optional string action = 1;
+  optional string dataUri = 2;
+  optional string mimeType = 3;
+  optional string javaClass = 4;
+  repeated group Extra = 5 {
+    optional string name = 6;
+    optional string value = 7;
   }
 }
-message InAppPurchaseInformationRequestProto {
-  optional SignatureHashProto signatureHash = 1;
-  optional int64 nonce = 2;
-  repeated string notificationId = 3;
-  optional string signatureAlgorithm = 4;
-  optional int32 billingApiVersion = 5;
+message AndroidStatisticProto {
+  optional string tag = 1;
+  optional int32 count = 2;
+  optional float sum = 3;
 }
-message InAppPurchaseInformationResponseProto {
-  optional SignedDataProto signedResponse = 1;
-  repeated StatusBarNotificationProto statusBarNotification = 2;
-  optional PurchaseResultProto purchaseResult = 3;
+message ClientLibraryState {
+  optional int32 corpus = 1;
+  optional bytes serverToken = 2;
+  optional int64 hashCodeSum = 3;
+  optional int32 librarySize = 4;
+  optional string libraryId = 5;
 }
-message InAppRestoreTransactionsRequestProto {
-  optional SignatureHashProto signatureHash = 1;
-  optional int64 nonce = 2;
-  optional string signatureAlgorithm = 3;
-  optional int32 billingApiVersion = 4;
+message AndroidDataUsageProto {
+    optional int32 version = 1;
+    optional int64 currentReportMsec = 2;
+    repeated KeyToPackageNameMapping keyToPackageNameMapping = 3;
+    repeated PayloadLevelAppStat payloadLevelAppStat = 4;
+    repeated IpLayerNetworkStat ipLayerNetworkStat = 5;
 }
-message InAppRestoreTransactionsResponseProto {
-  optional SignedDataProto signedResponse = 1;
-  optional PurchaseResultProto purchaseResult = 2;
+message AndroidUsageStatsReport {
+    optional int64 androidId = 1;
+    optional int64 loggingId = 2;
+    optional UsageStatsExtensionProto usageStats = 3;
 }
-/*
-message InputValidationError {
-  optional int32 inputField = 1;
-  optional string errorMessage = 2;
+message AppBucket {
+    optional int64 bucketStartMsec = 1;
+    optional int64 bucketDurationMsec = 2;
+    repeated StatCounters statCounters = 3;
+    optional int64 operationCount = 4;
 }
-*/
-message ModifyCommentRequestProto {
-  optional string assetId = 1;
-  optional ExternalCommentProto comment = 2;
-  optional bool deleteComment = 3;
-  optional bool flagAsset = 4;
-  optional int32 flagType = 5;
-  optional string flagMessage = 6;
-  optional bool nonFlagFlow = 7;
+message CounterData {
+    optional int64 bytes = 1;
+    optional int64 packets = 2;
 }
-message ModifyCommentResponseProto {
+message IpLayerAppStat {
+    optional int32 packageKey = 1;
+    optional int32 applicationTag = 2;
+    repeated AppBucket ipLayerAppBucket = 3;
 }
-message PaypalCountryInfoProto {
-  optional bool birthDateRequired = 1;
-  optional string tosText = 2;
-  optional string billingAgreementText = 3;
-  optional string preTosText = 4;
+message IpLayerNetworkBucket {
+    optional int64 bucketStartMsec = 1;
+    optional int64 bucketDurationMsec = 2;
+    repeated StatCounters statCounters = 3;
+    optional int64 networkActiveDuration = 4;
 }
-message PaypalCreateAccountRequestProto {
-  optional string firstName = 1;
-  optional string lastName = 2;
-  optional AddressProto address = 3;
-  optional string birthDate = 4;
+message IpLayerNetworkStat {
+    optional string networkDetails = 1;
+    optional int32 type = 2;
+    repeated IpLayerNetworkBucket ipLayerNetworkBucket = 3;
+    repeated IpLayerAppStat ipLayerAppStat = 4;
 }
-message PaypalCreateAccountResponseProto {
-  optional string createAccountKey = 1;
+message KeyToPackageNameMapping {
+    optional int32 packageKey = 1;
+    optional string uidName = 2;
+    repeated PackageInfo sharedPackageList = 3;
 }
-message PaypalCredentialsProto {
-  optional string preapprovalKey = 1;
-  optional string paypalEmail = 2;
+message PackageInfo {
+    optional string pkgName = 1;
+    optional int32 versionCode = 2;
 }
-message PaypalMassageAddressRequestProto {
-  optional AddressProto address = 1;
+message PayloadLevelAppStat {
+    optional int32 packageKey = 1;
+    optional int32 applicationTag = 2;
+    repeated AppBucket payloadLevelAppBucket = 3;
 }
-message PaypalMassageAddressResponseProto {
-  optional AddressProto address = 1;
+message StatCounters {
+    optional int32 networkProto = 1;
+    optional int32 direction = 2;
+    optional CounterData counterData = 3;
+    optional int32 fgBg = 4;
 }
-message PaypalPreapprovalCredentialsRequestProto {
-  optional string gaiaAuthToken = 1;
-  optional string billingInstrumentId = 2;
+message UsageStatsExtensionProto {
+    optional AndroidDataUsageProto dataUsage = 1;
 }
-message PaypalPreapprovalCredentialsResponseProto {
-  optional int32 resultCode = 1;
-  optional string paypalAccountKey = 2;
-  optional string paypalEmail = 3;
-}
-message PaypalPreapprovalDetailsRequestProto {
-  optional bool getAddress = 1;
-  optional string preapprovalKey = 2;
-}
-message PaypalPreapprovalDetailsResponseProto {
-  optional string paypalEmail = 1;
-  optional AddressProto address = 2;
-}
-message PaypalPreapprovalRequestProto {
-}
-message PaypalPreapprovalResponseProto {
-  optional string preapprovalKey = 1;
-}
-message PendingNotificationsProto {
-  repeated DataMessageProto notification = 1;
-  optional int64 nextCheckMillis = 2;
-}
-message PrefetchedBundleProto {
-  optional SingleRequestProto request = 1;
-  optional SingleResponseProto response = 2;
-}
-message PurchaseCartInfoProto {
-  optional string itemPrice = 1;
-  optional string taxInclusive = 2;
-  optional string taxExclusive = 3;
-  optional string total = 4;
-  optional string taxMessage = 5;
-  optional string footerMessage = 6;
-  optional string priceCurrency = 7;
-  optional int64 priceMicros = 8;
-}
-message PurchaseInfoProto {
-  optional string transactionId = 1;
-  optional PurchaseCartInfoProto cartInfo = 2;
-  optional group BillingInstruments = 3 {
-    repeated group BillingInstrument = 4 {
-      optional string id = 5;
-      optional string name = 6;
-      optional bool isInvalid = 7;
-      optional int32 instrumentType = 11;
-      optional int32 instrumentStatus = 14;
-    }
-    optional string defaultBillingInstrumentId = 8;
-  }
-  repeated int32 errorInputFields = 9;
-  optional string refundPolicy = 10;
-  optional bool userCanAddGdd = 12;
-  repeated int32 eligibleInstrumentTypes = 13;
-  optional string orderId = 15;
-}
-message PurchaseMetadataRequestProto {
-  optional bool deprecatedRetrieveBillingCountries = 1;
-  optional int32 billingInstrumentType = 2;
-}
-message PurchaseMetadataResponseProto {
-  optional group Countries = 1 {
-    repeated group Country = 2 {
-      optional string countryCode = 3;
-      optional string countryName = 4;
-      optional PaypalCountryInfoProto paypalCountryInfo = 5;
-      optional bool allowsReducedBillingAddress = 6;
-      repeated group InstrumentAddressSpec = 7 {
-        optional int32 instrumentFamily = 8;
-        optional BillingAddressSpec billingAddressSpec = 9;
-      }
-    }
-  }
-}
-message PurchaseOrderRequestProto {
-  optional string gaiaAuthToken = 1;
-  optional string assetId = 2;
-  optional string transactionId = 3;
-  optional string billingInstrumentId = 4;
-  optional bool tosAccepted = 5;
-  optional CarrierBillingCredentialsProto carrierBillingCredentials = 6;
-  optional string existingOrderId = 7;
-  optional int32 billingInstrumentType = 8;
-  optional string billingParametersId = 9;
-  optional PaypalCredentialsProto paypalCredentials = 10;
-  optional RiskHeaderInfoProto riskHeaderInfo = 11;
-  optional int32 productType = 12;
-  optional SignatureHashProto signatureHash = 13;
-  optional string developerPayload = 14;
-}
-message PurchaseOrderResponseProto {
-  optional int32 deprecatedResultCode = 1;
-  optional PurchaseInfoProto purchaseInfo = 2;
-  optional ExternalAssetProto asset = 3;
-  optional PurchaseResultProto purchaseResult = 4;
-}
-message PurchasePostRequestProto {
-  optional string gaiaAuthToken = 1;
-  optional string assetId = 2;
-  optional string transactionId = 3;
-  optional group BillingInstrumentInfo = 4 {
-    optional string billingInstrumentId = 5;
-    optional ExternalCreditCard creditCard = 6;
-    optional ExternalCarrierBillingInstrumentProto carrierInstrument = 9;
-    optional ExternalPaypalInstrumentProto paypalInstrument = 10;
-  }
-  optional bool tosAccepted = 7;
-  optional string cbInstrumentKey = 8;
-  optional bool paypalAuthConfirmed = 11;
-  optional int32 productType = 12;
-  optional SignatureHashProto signatureHash = 13;
-}
-message PurchasePostResponseProto {
-  optional int32 deprecatedResultCode = 1;
-  optional PurchaseInfoProto purchaseInfo = 2;
-  optional string termsOfServiceUrl = 3;
-  optional string termsOfServiceText = 4;
-  optional string termsOfServiceName = 5;
-  optional string termsOfServiceCheckboxText = 6;
-  optional string termsOfServiceHeaderText = 7;
-  optional PurchaseResultProto purchaseResult = 8;
-}
-message PurchaseProductRequestProto {
-  optional int32 productType = 1;
-  optional string productId = 2;
-  optional SignatureHashProto signatureHash = 3;
-}
-message PurchaseProductResponseProto {
-  optional string title = 1;
-  optional string itemTitle = 2;
-  optional string itemDescription = 3;
-  optional string merchantField = 4;
-}
-message PurchaseResultProto {
-  optional int32 resultCode = 1;
-  optional string resultCodeMessage = 2;
-}
-message QuerySuggestionProto {
-  optional string query = 1;
-  optional int32 estimatedNumResults = 2;
-  optional int32 queryWeight = 3;
-}
-message QuerySuggestionRequestProto {
-  optional string query = 1;
-  optional int32 requestType = 2;
-}
-message QuerySuggestionResponseProto {
-  repeated group Suggestion = 1 {
-    optional AppSuggestionProto appSuggestion = 2;
-    optional QuerySuggestionProto querySuggestion = 3;
-  }
-  optional int32 estimatedNumAppSuggestions = 4;
-  optional int32 estimatedNumQuerySuggestions = 5;
-}
-message RateCommentRequestProto {
-  optional string assetId = 1;
-  optional string creatorId = 2;
-  optional int32 commentRating = 3;
-}
-message RateCommentResponseProto {
-}
-message ReconstructDatabaseRequestProto {
-  optional bool retrieveFullHistory = 1;
-}
-message ReconstructDatabaseResponseProto {
-  repeated AssetIdentifierProto asset = 1;
-}
-message RefundRequestProto {
-  optional string assetId = 1;
-}
-message RefundResponseProto {
-  optional int32 result = 1;
-  optional ExternalAssetProto asset = 2;
-  optional string resultDetail = 3;
-}
-message RemoveAssetRequestProto {
-  optional string assetId = 1;
-}
-message RequestPropertiesProto {
-  optional string userAuthToken = 1;
-  optional bool userAuthTokenSecure = 2;
-  optional int32 softwareVersion = 3;
-  optional string aid = 4;
-  optional string productNameAndVersion = 5;
-  optional string userLanguage = 6;
-  optional string userCountry = 7;
-  optional string operatorName = 8;
-  optional string simOperatorName = 9;
-  optional string operatorNumericName = 10;
-  optional string simOperatorNumericName = 11;
-  optional string clientId = 12;
-  optional string loggingId = 13;
-}
-message RequestProto {
-  optional RequestPropertiesProto requestProperties = 1;
-  repeated group Request = 2 {
-    optional RequestSpecificPropertiesProto requestSpecificProperties = 3;
-    optional AssetsRequestProto assetRequest = 4;
-    optional CommentsRequestProto commentsRequest = 5;
-    optional ModifyCommentRequestProto modifyCommentRequest = 6;
-    optional PurchasePostRequestProto purchasePostRequest = 7;
-    optional PurchaseOrderRequestProto purchaseOrderRequest = 8;
-    optional ContentSyncRequestProto contentSyncRequest = 9;
-    optional GetAssetRequestProto getAssetRequest = 10;
-    optional GetImageRequestProto getImageRequest = 11;
-    optional RefundRequestProto refundRequest = 12;
-    optional PurchaseMetadataRequestProto purchaseMetadataRequest = 13;
-    optional GetSubCategoriesRequestProto subCategoriesRequest = 14;
-    optional UninstallReasonRequestProto uninstallReasonRequest = 16;
-    optional RateCommentRequestProto rateCommentRequest = 17;
-    optional CheckLicenseRequestProto checkLicenseRequest = 18;
-    optional GetMarketMetadataRequestProto getMarketMetadataRequest = 19;
-    optional GetCategoriesRequestProto getCategoriesRequest = 21;
-    optional GetCarrierInfoRequestProto getCarrierInfoRequest = 22;
-    optional RemoveAssetRequestProto removeAssetRequest = 23;
-    optional RestoreApplicationsRequestProto restoreApplicationsRequest = 24;
-    optional QuerySuggestionRequestProto querySuggestionRequest = 25;
-    optional BillingEventRequestProto billingEventRequest = 26;
-    optional PaypalPreapprovalRequestProto paypalPreapprovalRequest = 27;
-    optional PaypalPreapprovalDetailsRequestProto paypalPreapprovalDetailsRequest = 28;
-    optional PaypalCreateAccountRequestProto paypalCreateAccountRequest = 29;
-    optional PaypalPreapprovalCredentialsRequestProto paypalPreapprovalCredentialsRequest = 30;
-    optional InAppRestoreTransactionsRequestProto inAppRestoreTransactionsRequest = 31;
-    optional InAppPurchaseInformationRequestProto inAppPurchaseInformationRequest = 32;
-    optional CheckForNotificationsRequestProto checkForNotificationsRequest = 33;
-    optional AckNotificationsRequestProto ackNotificationsRequest = 34;
-    optional PurchaseProductRequestProto purchaseProductRequest = 35;
-    optional ReconstructDatabaseRequestProto reconstructDatabaseRequest = 36;
-    optional PaypalMassageAddressRequestProto paypalMassageAddressRequest = 37;
-    optional GetAddressSnippetRequestProto getAddressSnippetRequest = 38;
-  }
-}
-message RequestSpecificPropertiesProto {
-  optional string ifNoneMatch = 1;
-}
-message ResponsePropertiesProto {
-  optional int32 result = 1;
-  optional int32 maxAge = 2;
-  optional string etag = 3;
-  optional int32 serverVersion = 4;
-  optional int32 maxAgeConsumable = 6;
-  optional string errorMessage = 7;
-  repeated InputValidationError errorInputField = 8;
-}
-message ResponseProto {
-  repeated group Response = 1 {
-    optional ResponsePropertiesProto responseProperties = 2;
-    optional AssetsResponseProto assetsResponse = 3;
-    optional CommentsResponseProto commentsResponse = 4;
-    optional ModifyCommentResponseProto modifyCommentResponse = 5;
-    optional PurchasePostResponseProto purchasePostResponse = 6;
-    optional PurchaseOrderResponseProto purchaseOrderResponse = 7;
-    optional ContentSyncResponseProto contentSyncResponse = 8;
-    optional GetAssetResponseProto getAssetResponse = 9;
-    optional GetImageResponseProto getImageResponse = 10;
-    optional RefundResponseProto refundResponse = 11;
-    optional PurchaseMetadataResponseProto purchaseMetadataResponse = 12;
-    optional GetSubCategoriesResponseProto subCategoriesResponse = 13;
-    optional UninstallReasonResponseProto uninstallReasonResponse = 15;
-    optional RateCommentResponseProto rateCommentResponse = 16;
-    optional CheckLicenseResponseProto checkLicenseResponse = 17;
-    optional GetMarketMetadataResponseProto getMarketMetadataResponse = 18;
-    repeated PrefetchedBundleProto prefetchedBundle = 19;
-    optional GetCategoriesResponseProto getCategoriesResponse = 20;
-    optional GetCarrierInfoResponseProto getCarrierInfoResponse = 21;
-    optional RestoreApplicationsResponseProto restoreApplicationResponse = 23;
-    optional QuerySuggestionResponseProto querySuggestionResponse = 24;
-    optional BillingEventResponseProto billingEventResponse = 25;
-    optional PaypalPreapprovalResponseProto paypalPreapprovalResponse = 26;
-    optional PaypalPreapprovalDetailsResponseProto paypalPreapprovalDetailsResponse = 27;
-    optional PaypalCreateAccountResponseProto paypalCreateAccountResponse = 28;
-    optional PaypalPreapprovalCredentialsResponseProto paypalPreapprovalCredentialsResponse = 29;
-    optional InAppRestoreTransactionsResponseProto inAppRestoreTransactionsResponse = 30;
-    optional InAppPurchaseInformationResponseProto inAppPurchaseInformationResponse = 31;
-    optional CheckForNotificationsResponseProto checkForNotificationsResponse = 32;
-    optional AckNotificationsResponseProto ackNotificationsResponse = 33;
-    optional PurchaseProductResponseProto purchaseProductResponse = 34;
-    optional ReconstructDatabaseResponseProto reconstructDatabaseResponse = 35;
-    optional PaypalMassageAddressResponseProto paypalMassageAddressResponse = 36;
-    optional GetAddressSnippetResponseProto getAddressSnippetResponse = 37;
-  }
-  optional PendingNotificationsProto pendingNotifications = 38;
-}
-message RestoreApplicationsRequestProto {
-  optional string backupAndroidId = 1;
-  optional string tosVersion = 2;
-  optional DeviceConfigurationProto deviceConfiguration = 3;
-}
-message RestoreApplicationsResponseProto {
-  repeated GetAssetResponseProto asset = 1;
-}
-message RiskHeaderInfoProto {
-  optional string hashedDeviceInfo = 1;
-}
-message SignatureHashProto {
-  optional string packageName = 1;
-  optional int32 versionCode = 2;
-  optional bytes hash = 3;
-}
-message SignedDataProto {
-  optional string signedData = 1;
-  optional string signature = 2;
-}
-message SingleRequestProto {
-  optional RequestSpecificPropertiesProto requestSpecificProperties = 3;
-  optional AssetsRequestProto assetRequest = 4;
-  optional CommentsRequestProto commentsRequest = 5;
-  optional ModifyCommentRequestProto modifyCommentRequest = 6;
-  optional PurchasePostRequestProto purchasePostRequest = 7;
-  optional PurchaseOrderRequestProto purchaseOrderRequest = 8;
-  optional ContentSyncRequestProto contentSyncRequest = 9;
-  optional GetAssetRequestProto getAssetRequest = 10;
-  optional GetImageRequestProto getImageRequest = 11;
-  optional RefundRequestProto refundRequest = 12;
-  optional PurchaseMetadataRequestProto purchaseMetadataRequest = 13;
-  optional GetSubCategoriesRequestProto subCategoriesRequest = 14;
-  optional UninstallReasonRequestProto uninstallReasonRequest = 16;
-  optional RateCommentRequestProto rateCommentRequest = 17;
-  optional CheckLicenseRequestProto checkLicenseRequest = 18;
-  optional GetMarketMetadataRequestProto getMarketMetadataRequest = 19;
-  optional GetCategoriesRequestProto getCategoriesRequest = 21;
-  optional GetCarrierInfoRequestProto getCarrierInfoRequest = 22;
-  optional RemoveAssetRequestProto removeAssetRequest = 23;
-  optional RestoreApplicationsRequestProto restoreApplicationsRequest = 24;
-  optional QuerySuggestionRequestProto querySuggestionRequest = 25;
-  optional BillingEventRequestProto billingEventRequest = 26;
-  optional PaypalPreapprovalRequestProto paypalPreapprovalRequest = 27;
-  optional PaypalPreapprovalDetailsRequestProto paypalPreapprovalDetailsRequest = 28;
-  optional PaypalCreateAccountRequestProto paypalCreateAccountRequest = 29;
-  optional PaypalPreapprovalCredentialsRequestProto paypalPreapprovalCredentialsRequest = 30;
-  optional InAppRestoreTransactionsRequestProto inAppRestoreTransactionsRequest = 31;
-  optional InAppPurchaseInformationRequestProto getInAppPurchaseInformationRequest = 32;
-  optional CheckForNotificationsRequestProto checkForNotificationsRequest = 33;
-  optional AckNotificationsRequestProto ackNotificationsRequest = 34;
-  optional PurchaseProductRequestProto purchaseProductRequest = 35;
-  optional ReconstructDatabaseRequestProto reconstructDatabaseRequest = 36;
-  optional PaypalMassageAddressRequestProto paypalMassageAddressRequest = 37;
-  optional GetAddressSnippetRequestProto getAddressSnippetRequest = 38;
-}
-message SingleResponseProto {
-  optional ResponsePropertiesProto responseProperties = 2;
-  optional AssetsResponseProto assetsResponse = 3;
-  optional CommentsResponseProto commentsResponse = 4;
-  optional ModifyCommentResponseProto modifyCommentResponse = 5;
-  optional PurchasePostResponseProto purchasePostResponse = 6;
-  optional PurchaseOrderResponseProto purchaseOrderResponse = 7;
-  optional ContentSyncResponseProto contentSyncResponse = 8;
-  optional GetAssetResponseProto getAssetResponse = 9;
-  optional GetImageResponseProto getImageResponse = 10;
-  optional RefundResponseProto refundResponse = 11;
-  optional PurchaseMetadataResponseProto purchaseMetadataResponse = 12;
-  optional GetSubCategoriesResponseProto subCategoriesResponse = 13;
-  optional UninstallReasonResponseProto uninstallReasonResponse = 15;
-  optional RateCommentResponseProto rateCommentResponse = 16;
-  optional CheckLicenseResponseProto checkLicenseResponse = 17;
-  optional GetMarketMetadataResponseProto getMarketMetadataResponse = 18;
-  optional GetCategoriesResponseProto getCategoriesResponse = 20;
-  optional GetCarrierInfoResponseProto getCarrierInfoResponse = 21;
-  optional RestoreApplicationsResponseProto restoreApplicationResponse = 23;
-  optional QuerySuggestionResponseProto querySuggestionResponse = 24;
-  optional BillingEventResponseProto billingEventResponse = 25;
-  optional PaypalPreapprovalResponseProto paypalPreapprovalResponse = 26;
-  optional PaypalPreapprovalDetailsResponseProto paypalPreapprovalDetailsResponse = 27;
-  optional PaypalCreateAccountResponseProto paypalCreateAccountResponse = 28;
-  optional PaypalPreapprovalCredentialsResponseProto paypalPreapprovalCredentialsResponse = 29;
-  optional InAppRestoreTransactionsResponseProto inAppRestoreTransactionsResponse = 30;
-  optional InAppPurchaseInformationResponseProto getInAppPurchaseInformationResponse = 31;
-  optional CheckForNotificationsResponseProto checkForNotificationsResponse = 32;
-  optional AckNotificationsResponseProto ackNotificationsResponse = 33;
-  optional PurchaseProductResponseProto purchaseProductResponse = 34;
-  optional ReconstructDatabaseResponseProto reconstructDatabaseResponse = 35;
-  optional PaypalMassageAddressResponseProto paypalMassageAddressResponse = 36;
-  optional GetAddressSnippetResponseProto getAddressSnippetResponse = 37;
-}
-message StatusBarNotificationProto {
-  optional string tickerText = 1;
-  optional string contentTitle = 2;
-  optional string contentText = 3;
-}
-message UninstallReasonRequestProto {
-  optional string assetId = 1;
-  optional int32 reason = 2;
-}
-message UninstallReasonResponseProto {
-}
-

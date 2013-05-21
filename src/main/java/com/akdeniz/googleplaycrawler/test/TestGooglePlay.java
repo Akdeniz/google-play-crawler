@@ -7,16 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.akdeniz.googleplaycrawler.GooglePlayAPI;
-import com.akdeniz.googleplaycrawler.Googleplay.AppDetails;
-import com.akdeniz.googleplaycrawler.Googleplay.BrowseLink;
-import com.akdeniz.googleplaycrawler.Googleplay.BrowseResponse;
-import com.akdeniz.googleplaycrawler.Googleplay.BulkDetailsEntry;
-import com.akdeniz.googleplaycrawler.Googleplay.BulkDetailsResponse;
-import com.akdeniz.googleplaycrawler.Googleplay.DetailsResponse;
-import com.akdeniz.googleplaycrawler.Googleplay.DocV2;
-import com.akdeniz.googleplaycrawler.Googleplay.ListResponse;
-import com.akdeniz.googleplaycrawler.Googleplay.Offer;
-import com.akdeniz.googleplaycrawler.Googleplay.SearchResponse;
+import com.akdeniz.googleplaycrawler.GooglePlay.AppDetails;
+import com.akdeniz.googleplaycrawler.GooglePlay.BrowseLink;
+import com.akdeniz.googleplaycrawler.GooglePlay.BrowseResponse;
+import com.akdeniz.googleplaycrawler.GooglePlay.BulkDetailsEntry;
+import com.akdeniz.googleplaycrawler.GooglePlay.BulkDetailsResponse;
+import com.akdeniz.googleplaycrawler.GooglePlay.DetailsResponse;
+import com.akdeniz.googleplaycrawler.GooglePlay.DocV2;
+import com.akdeniz.googleplaycrawler.GooglePlay.ListResponse;
+import com.akdeniz.googleplaycrawler.GooglePlay.Offer;
+import com.akdeniz.googleplaycrawler.GooglePlay.SearchResponse;
 
 /**
  * 

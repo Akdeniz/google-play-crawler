@@ -8,9 +8,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.akdeniz.googleplaycrawler.GooglePlayAPI;
-import com.akdeniz.googleplaycrawler.Googleplay.AndroidAppDeliveryData;
-import com.akdeniz.googleplaycrawler.Googleplay.HttpCookie;
-import com.akdeniz.googleplaycrawler.Googleplay.Notification;
+import com.akdeniz.googleplaycrawler.GooglePlay.AndroidAppDeliveryData;
+import com.akdeniz.googleplaycrawler.GooglePlay.HttpCookie;
+import com.akdeniz.googleplaycrawler.GooglePlay.Notification;
 
 /**
  * Handles download notifications.

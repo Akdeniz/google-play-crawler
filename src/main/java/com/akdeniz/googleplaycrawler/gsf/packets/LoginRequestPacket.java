@@ -2,8 +2,8 @@ package com.akdeniz.googleplaycrawler.gsf.packets;
 
 import java.nio.ByteBuffer;
 
-import com.akdeniz.googleplaycrawler.gsf.Gsf.HeartBeatStat;
-import com.akdeniz.googleplaycrawler.gsf.Gsf.LoginRequest;
+import com.akdeniz.googleplaycrawler.gsf.GoogleServicesFramework.HeartBeatStat;
+import com.akdeniz.googleplaycrawler.gsf.GoogleServicesFramework.LoginRequest;
 
 /**
  * 
