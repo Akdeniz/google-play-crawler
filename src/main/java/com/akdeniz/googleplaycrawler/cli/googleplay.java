@@ -20,6 +20,7 @@ import org.apache.mina.core.future.WriteFuture;
 import org.apache.mina.core.session.IoSession;
 
 import com.akdeniz.googleplaycrawler.GooglePlayAPI;
+import com.akdeniz.googleplaycrawler.GooglePlayAPI.RECOMMENDATION_TYPE;
 import com.akdeniz.googleplaycrawler.GooglePlayAPI.REVIEW_SORT;
 import com.akdeniz.googleplaycrawler.GooglePlayException;
 import com.akdeniz.googleplaycrawler.GooglePlay.AppDetails;
@@ -69,7 +70,7 @@ public class googleplay {
     private Namespace namespace;
 
     public static enum COMMAND {
-	LIST, DOWNLOAD, CHECKIN, CATEGORIES, SEARCH, PERMISSIONS, REVIEWS, REGISTER, USEGCM
+	LIST, DOWNLOAD, CHECKIN, CATEGORIES, SEARCH, PERMISSIONS, REVIEWS, REGISTER, USEGCM, RECOMMENDATIONS
     }
 
     private static final String LIST_HEADER = new StringJoiner(DELIMETER).add("Title").add("Package").add("Creator")
@@ -149,6 +150,17 @@ public class googleplay {
 	reviewsParser.addArgument("-n", "--number").type(Integer.class).required(false)
 		.help("how many reviews will be listed");
 	
+	/* =================Recommendation Arguments============== */
+	Subparser recommendationParser = subparsers.addParser("recommendations", true)
+		.description("lists recommended apps of given application").setDefault("command", COMMAND.RECOMMENDATIONS);
+	recommendationParser.addArgument("package").help("application whose recommendations to be listed");
+	recommendationParser.addArgument("-t", "--type").choices(new ReleationChoice()).type(new RecommendationType())
+		.required(false).help("releations type").setDefault(RECOMMENDATION_TYPE.ALSO_INSTALLED);
+	recommendationParser.addArgument("-o", "--offset").type(Integer.class).required(false)
+		.help("offset to define where list begins");
+	recommendationParser.addArgument("-n", "--number").type(Integer.class).required(false)
+		.help("how many recommendations will be listed");
+	
 	/* =================Register Arguments============== */
 	subparsers.addParser("register", true).description("registers device so that can be seen from web!")
 		.setDefault("command", COMMAND.REGISTER);
@@ -203,10 +215,12 @@ public class googleplay {
 	    case USEGCM:
 		useGCMCommand();
 		break;
+	    case RECOMMENDATIONS:
+	    recommendationsCommand();
+		break;
 	    }
 	} catch (Exception e) {
 	    System.err.println(e.getMessage());
-	    e.printStackTrace();
 	    System.exit(-1);
 	}
     }
@@ -274,6 +288,25 @@ public class googleplay {
 		throw new IOException("Error occured while writing!", exception);
 	    }
 	    throw new IOException("Error occured while writing!");
+	}
+    }
+    
+    private void recommendationsCommand() throws Exception {
+	login();
+
+	String packageName = namespace.getString("package");
+	RECOMMENDATION_TYPE type = (RECOMMENDATION_TYPE) namespace.get("type");
+	Integer offset = namespace.getInt("offset");
+	Integer number = namespace.getInt("number");
+
+	ListResponse recommendations = service.recommendations(packageName, type, offset, number);
+	
+	if (recommendations.getDoc(0).getChildCount() == 0) {
+	    System.out.println("No recommendation found!");
+	} else {
+		for (DocV2 child : recommendations.getDoc(0).getChildList()) {
+			System.out.println(child.getDetails().getAppDetails().getPackageName());
+		}
 	}
     }
 
@@ -576,6 +609,34 @@ class ReviewSortChoice extends CollectionArgumentChoice<REVIEW_SORT> {
 
     public ReviewSortChoice() {
 	super(REVIEW_SORT.NEWEST, REVIEW_SORT.HIGHRATING, REVIEW_SORT.HELPFUL);
+    }
+
+    @Override
+    public boolean contains(Object val) {
+	try {
+	    return super.contains(val);
+	} catch (IllegalArgumentException ex) {
+	    return false;
+	}
+    }
+}
+
+class RecommendationType implements ArgumentType<Object> {
+
+    @Override
+    public Object convert(ArgumentParser parser, Argument arg, String value) throws ArgumentParserException {
+	try {
+	    return RECOMMENDATION_TYPE.valueOf(value);
+	} catch (IllegalArgumentException ex) {
+	    return value;
+	}
+    }
+}
+
+class ReleationChoice extends CollectionArgumentChoice<RECOMMENDATION_TYPE> {
+
+    public ReleationChoice() {
+	super(RECOMMENDATION_TYPE.ALSO_VIEWED, RECOMMENDATION_TYPE.ALSO_INSTALLED);
     }
 
     @Override

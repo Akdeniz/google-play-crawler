@@ -71,6 +71,7 @@ public class GooglePlayAPI {
     private static final String PURCHASE_URL = FDFE_URL + "purchase";
     private static final String REVIEWS_URL = FDFE_URL + "rev";
     private static final String UPLOADDEVICECONFIG_URL = FDFE_URL + "uploadDeviceConfig";
+    private static final String RECOMMENDATIONS_URL = FDFE_URL + "rec";
 
     private static final String ACCOUNT_TYPE_HOSTED_OR_GOOGLE = "HOSTED_OR_GOOGLE";
 
@@ -80,6 +81,16 @@ public class GooglePlayAPI {
 	public int value;
 
 	private REVIEW_SORT(int value) {
+	    this.value = value;
+	}
+    }
+    
+    public static enum RECOMMENDATION_TYPE {
+	ALSO_VIEWED(1), ALSO_INSTALLED(2);
+
+	public int value;
+
+	private RECOMMENDATION_TYPE(int value) {
 	    this.value = value;
 	}
     }
@@ -369,6 +380,22 @@ public class GooglePlayAPI {
 	ResponseWrapper responseWrapper = executePOSTRequest(UPLOADDEVICECONFIG_URL, request.toByteArray(),
 		"application/x-protobuf");
 	return responseWrapper.getPayload().getUploadDeviceConfigResponse();
+    }
+    
+    /**
+     * Fetches the recommendations of given package name.
+     * 
+     * Default values for offset and numberOfResult are "0" and "20"
+     * respectively. These values are determined by Google Play Store.
+     */
+    public ListResponse recommendations(String packageName, RECOMMENDATION_TYPE type, Integer offset, Integer numberOfResult)
+	    throws IOException {
+	ResponseWrapper responseWrapper = executeGETRequest(RECOMMENDATIONS_URL,
+		new String[][] { { "c", "3" }, { "doc", packageName }, { "rt", (type == null) ? null : String.valueOf(type.value) },
+			{ "o", (offset == null) ? null : String.valueOf(offset) },
+			{ "n", (numberOfResult == null) ? null : String.valueOf(numberOfResult) } });
+
+	return responseWrapper.getPayload().getListResponse();
     }
 
     /* =======================Helper Functions====================== */
