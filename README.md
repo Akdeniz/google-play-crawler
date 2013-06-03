@@ -23,7 +23,9 @@ Take a look at code, it is not that sophisticated..
 
 ## Building and running
 
-Make sure you hava protoc installed.
+###SBT
+
+Make sure you hava protoc installed (version 2.5!).
 On OSX:
 ```
 brew install protobuf
@@ -43,8 +45,35 @@ sbt assembly
 ```
 Note: This will generate the protobuf java files and compile them as part of the project.
 
+###Maven
+
+Install Maven 3 & protobuf compiler (version 2.5!)
+```
+sudo apt-get install maven protobuf-compiler libprotobuf-java
+```
+And build:
+```
+mvn package -Dmaven.test.skip=true
+```
+
+This will ignore the tests and pack for you. If you want to run tests, you need to edit login.conf with your google account credentials.
+
 
 ## Usage
+
+### Maven Reference
+```
+<dependency>
+    <groupId>com.akdeniz</groupId>
+	<artifactId>googleplaycrawler</artifactId>
+	<version>0.1</version>
+</dependency>
+
+<repository>
+	<id>github.release.repo</id>
+	<url>https://raw.github.com/Akdeniz/akdeniz-repo/master/repo/releases/</url>
+</repository>
+```
 
 ### General
 
