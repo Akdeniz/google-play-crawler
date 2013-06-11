@@ -66,7 +66,7 @@ This will ignore the tests and pack for you. If you want to run tests, you need 
 <dependency>
     <groupId>com.akdeniz</groupId>
 	<artifactId>googleplaycrawler</artifactId>
-	<version>0.1</version>
+	<version>0.2</version>
 </dependency>
 
 <repository>
