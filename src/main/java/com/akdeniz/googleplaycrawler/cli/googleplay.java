@@ -97,6 +97,8 @@ public class googleplay {
 		.setDefault(FeatureControl.SUPPRESS);
 	parser.addArgument("-t", "--securitytoken").nargs("?").help("Security token that was generated at checkin. It is only required for \"usegcm\" option")
 	.setDefault(FeatureControl.SUPPRESS);
+	parser.addArgument("-z", "--localization").nargs("?").help("Localization string that will customise fetched informations such as reviews, " +
+			"descriptions,... Can be : en-EN, en-US, tr-TR, fr-FR ... (default : en-EN)").setDefault(FeatureControl.SUPPRESS);
 	parser.addArgument("-a", "--host").nargs("?").help("Proxy host").setDefault(FeatureControl.SUPPRESS);
 	parser.addArgument("-l", "--port").type(Integer.class).nargs("?").help("Proxy port")
 		.setDefault(FeatureControl.SUPPRESS);
@@ -391,9 +393,10 @@ public class googleplay {
 	String androidid = namespace.getString("androidid");
 	String email = namespace.getString("email");
 	String password = namespace.getString("password");
+	String localization = namespace.getString("localization");
 
 	if (androidid != null && email != null && password != null) {
-	    createLoginableService(androidid, email, password);
+	    createLoginableService(androidid, email, password, localization);
 	    service.login();
 	    return;
 	}
@@ -405,9 +408,10 @@ public class googleplay {
 	    androidid = properties.getProperty("androidid");
 	    email = properties.getProperty("email");
 	    password = properties.getProperty("password");
+	    localization = properties.getProperty("localization");
 
 	    if (androidid != null && email != null && password != null) {
-		createLoginableService(androidid, email, password);
+		createLoginableService(androidid, email, password, localization);
 		service.login();
 		return;
 	    }
@@ -421,9 +425,10 @@ public class googleplay {
 	String email = namespace.getString("email");
 	String password = namespace.getString("password");
 	String securityToken = namespace.getString("securitytoken");
+	String localization = namespace.getString("localization");
 
 	if (androidid != null && email != null && password != null && securityToken!=null) {
-	    createLoginableService(androidid, email, password);
+	    createLoginableService(androidid, email, password, localization);
 	    service.login();
 	    service.setSecurityToken(securityToken);
 	    return service.loginAC2DM();
@@ -437,9 +442,10 @@ public class googleplay {
 	    email = properties.getProperty("email");
 	    password = properties.getProperty("password");
 	    securityToken = properties.getProperty("securitytoken");
+	    localization = properties.getProperty("localization");
 
 	    if (androidid != null && email != null && password != null && securityToken!=null) {
-		createLoginableService(androidid, email, password);
+		createLoginableService(androidid, email, password, localization);
 		service.login();
 		service.setSecurityToken(securityToken);
 		return service.loginAC2DM();
@@ -449,16 +455,18 @@ public class googleplay {
 	throw new GooglePlayException("Lack of information for login!");
     }
 
-    private void createLoginableService(String androidid, String email, String password) throws Exception {
+    private void createLoginableService(String androidid, String email, String password, String localization) throws Exception {
 	service = new GooglePlayAPI(email, password, androidid);
+	service.setLocalization(localization);
 	HttpClient proxiedHttpClient = getProxiedHttpClient();
 	if (proxiedHttpClient != null) {
 	    service.setClient(proxiedHttpClient);
 	}
     }
 
-    private void createCheckinableService(String email, String password) throws Exception {
+    private void createCheckinableService(String email, String password, String localization) throws Exception {
 	service = new GooglePlayAPI(email, password);
+	service.setLocalization(localization);
 	HttpClient proxiedHttpClient = getProxiedHttpClient();
 	if (proxiedHttpClient != null) {
 	    service.setClient(proxiedHttpClient);
@@ -505,9 +513,10 @@ public class googleplay {
     private void checkin() throws Exception {
 	String email = namespace.getString("email");
 	String password = namespace.getString("password");
+	String localization = namespace.getString("localization");
 
 	if (email != null && password != null) {
-	    createCheckinableService(email, password);
+	    createCheckinableService(email, password, localization);
 	    service.checkin();
 	    return;
 	}
@@ -518,9 +527,10 @@ public class googleplay {
 
 	    email = properties.getProperty("email");
 	    password = properties.getProperty("password");
+	    localization = properties.getProperty("localization");
 
 	    if (email != null && password != null) {
-		createCheckinableService(email, password);
+		createCheckinableService(email, password, localization);
 		service.checkin();
 		return;
 	    }

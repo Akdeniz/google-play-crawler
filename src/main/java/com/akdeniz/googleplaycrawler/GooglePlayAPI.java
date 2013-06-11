@@ -101,6 +101,7 @@ public class GooglePlayAPI {
     private String password;
     private HttpClient client;
     private String securityToken;
+    private String localization;
 
     /**
      * Default constructor. ANDROID ID and Authentication token must be supplied
@@ -526,7 +527,7 @@ public class GooglePlayAPI {
     private String[][] getHeaderParameters( String token, String contentType ) {
 
 	return new String[][] {
-		{ "Accept-Language", "en-EN" },
+		{ "Accept-Language", getLocalization()!=null?getLocalization():"en-EN" },
 		{ "Authorization", "GoogleLogin auth=" + token },
 		{ "X-DFE-Enabled-Experiments", "cl:billing.select_add_instrument_by_default" },
 		{
@@ -588,5 +589,23 @@ public class GooglePlayAPI {
     public void setEmail(String email) {
 	this.email = email;
     }
+
+	public String getLocalization() {
+		return localization;
+	}
+
+	/**
+	 * Localization string that will be used in each request to server. Using this option
+	 * you can fetch localized informations such as reviews and descriptions. 
+	 * <p>
+	 * Note that changing this value has no affect on localized application list that 
+	 * server provides. It depends on only your IP location.
+	 * <p>
+	 * 
+	 * @param localization can be <b>en-EN, en-US, tr-TR, fr-FR ... (default : en-EN)</b>
+	 */
+	public void setLocalization(String localization) {
+		this.localization = localization;
+	}
 
 }
