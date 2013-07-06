@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.http.HttpHost;
+import org.apache.http.client.HttpClient;
+import org.apache.http.conn.params.ConnRoutePNames;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -25,8 +29,16 @@ public class TestGooglePlayCrawler {
 
 	private static GooglePlayAPI service;
 
+	private static HttpClient getProxiedHttpClient(String host, Integer port) throws Exception {
+		HttpClient client = new DefaultHttpClient(GooglePlayAPI.getConnectionManager());
+		client.getConnectionManager().getSchemeRegistry().register(Utils.getMockedScheme());
+		HttpHost proxy = new HttpHost(host, port);
+		client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
+		return client;
+	}
+
 	@BeforeClass
-	public static void setup() throws IOException {
+	public static void setup() throws Exception {
 
 		Properties properties = new Properties();
 		properties.load(new FileInputStream("./src/test/resources/login.conf"));
@@ -34,7 +46,14 @@ public class TestGooglePlayCrawler {
 		String email = properties.getProperty("email");
 		String password = properties.getProperty("password");
 
+		String host = properties.getProperty("host");
+		String port = properties.getProperty("port");
+
 		service = new GooglePlayAPI(email, password);
+
+		if (host != null && port != null) {
+			service.setClient(getProxiedHttpClient(host, Integer.valueOf(port)));
+		}
 	}
 
 	@Test

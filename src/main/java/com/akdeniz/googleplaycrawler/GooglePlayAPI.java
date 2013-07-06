@@ -170,12 +170,17 @@ public class GooglePlayAPI {
     
     /**
      * Logins AC2DM server and returns authentication string.
+     *
+     * <p>
+     * client_sig is SHA1 digest of encoded certificate on 
+     * <i>GoogleLoginService(package name : com.google.android.gsf)</i> system APK. 
+     * But google doesn't seem to care of value of this parameter. 
      */
     public String loginAC2DM() throws IOException{
 	HttpEntity c2dmResponseEntity = executePost(URL_LOGIN, new String[][] { { "Email", this.getEmail() },
 		{ "Passwd", this.password }, { "service", "ac2dm" }, { "accountType", ACCOUNT_TYPE_HOSTED_OR_GOOGLE },
 		{ "has_permission", "1" }, { "source", "android" }, { "app", "com.google.android.gsf" },
-		{ "device_country", "us" }, { "device_country", "us" }, { "lang", "en" }, { "sdk_version", "16" }, }, null);
+		{ "device_country", "us" }, { "device_country", "us" }, { "lang", "en" }, { "sdk_version", "16" }, { "client_sig", "38918a453d07199354f8b19af05ec6562ced5788" }, }, null);
 
 	Map<String, String> c2dmAuth = Utils.parseResponse(new String(Utils.readAll(c2dmResponseEntity.getContent())));
 	return c2dmAuth.get("Auth");
