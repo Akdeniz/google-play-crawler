@@ -72,6 +72,7 @@ public class GooglePlayAPI {
     private static final String REVIEWS_URL = FDFE_URL + "rev";
     private static final String UPLOADDEVICECONFIG_URL = FDFE_URL + "uploadDeviceConfig";
     private static final String RECOMMENDATIONS_URL = FDFE_URL + "rec";
+	private static final String DELIVERY_URL = FDFE_URL + "delivery";
 
     private static final String ACCOUNT_TYPE_HOSTED_OR_GOOGLE = "HOSTED_OR_GOOGLE";
 
@@ -320,6 +321,17 @@ public class GooglePlayAPI {
 	return executeDownload(downloadUrl, downloadAuthCookie.getName() + "=" + downloadAuthCookie.getValue());
 
     }
+
+	public InputStream delivery (String packageName, int versionCode, int offerType) throws IOException {
+		ResponseWrapper responseWrapper = executeGETRequest(DELIVERY_URL, new String[][] { { "ot", String.valueOf(offerType) },
+				{ "doc", packageName }, { "vc", String.valueOf(versionCode) }, });
+
+		AndroidAppDeliveryData appDeliveryData = responseWrapper.getPayload().getDeliveryResponse().getAppDeliveryData();
+		String downloadUrl = appDeliveryData.getDownloadUrl();
+		HttpCookie downloadAuthCookie = appDeliveryData.getDownloadAuthCookie(0);
+
+		return executeDownload(downloadUrl, downloadAuthCookie.getName() + "=" + downloadAuthCookie.getValue());
+	}
 
     /**
      * Posts given check-in request content and returns
