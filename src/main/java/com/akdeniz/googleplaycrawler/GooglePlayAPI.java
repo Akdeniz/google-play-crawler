@@ -213,7 +213,7 @@ public class GooglePlayAPI {
 	HttpEntity responseEntity = executePost(URL_LOGIN, new String[][] { { "Email", this.getEmail() }, { "Passwd", this.password },
 		{ "service", "androidmarket" }, { "accountType", ACCOUNT_TYPE_HOSTED_OR_GOOGLE }, { "has_permission", "1" },
 		{ "source", "android" }, { "androidId", this.getAndroidID() }, { "app", "com.android.vending" },
-		{ "device_country", "en" }, { "lang", "en" }, { "sdk_version", "16" }, }, null);
+		{ "device_country", "en" }, { "lang", "en" }, { "sdk_version", "16" }, { "client_sig", "38918a453d07199354f8b19af05ec6562ced5788" }, }, null);
 
 	Map<String, String> response = Utils.parseResponse(new String(Utils.readAll(responseEntity.getContent())));
 	if (response.containsKey("Auth")) {
