@@ -51,7 +51,8 @@ object Build extends Build {
       "org.apache.httpcomponents" % "httpclient-cache" % "4.2.2",
       "org.apache.httpcomponents" % "httpmime" % "4.2.2",
       "org.apache.mina" % "mina-core" % "2.0.7",
-      "org.slf4j" % "slf4j-simple" % "1.7.2"
+      "org.slf4j" % "slf4j-simple" % "1.7.2",
+      "org.testng" % "testng" % "6.1.1" % "test"
       )
   ) 
 }
