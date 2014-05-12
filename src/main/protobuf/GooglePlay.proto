@@ -156,6 +156,11 @@ message BuyResponse {
   optional string purchaseCookie = 46;
   optional Challenge challenge = 49;
 }
+
+message DeliveryResponse {
+  optional AndroidAppDeliveryData appDeliveryData = 2;
+}
+
 message Challenge {
   optional AddressChallenge addressChallenge = 1;
   optional AuthenticationChallenge authenticationChallenge = 2;
@@ -757,6 +762,7 @@ message Payload {
   optional BulkDetailsResponse bulkDetailsResponse = 19;
   optional UploadDeviceConfigResponse uploadDeviceConfigResponse = 25;
   optional AndroidCheckinResponse androidCheckinResponse = 26;
+  optional DeliveryResponse deliveryResponse = 21;
 }
 message PreFetch {
   optional string url = 1;

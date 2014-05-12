@@ -581,14 +581,16 @@ public class googleplay {
 	int offerType = offer.getOfferType();
 	boolean checkoutRequired = offer.getCheckoutFlowRequired();
 
+	System.out.println("Downloading..." + appDetails.getPackageName() + " : " + installationSize + " bytes");
+	InputStream downloadStream;
+
 	// paid application...ignore
 	if (checkoutRequired) {
-	    System.out.println("Checkout required! Ignoring.." + appDetails.getPackageName());
-	    return;
+	    System.out.println("Checkout required! Assuming you have already purchased it, use the delivery flow for " + appDetails.getPackageName());
+		downloadStream = service.delivery(appDetails.getPackageName(), versionCode, offerType);
+	} else {
+	    downloadStream = service.download(appDetails.getPackageName(), versionCode, offerType);
 	}
-
-	System.out.println("Downloading..." + appDetails.getPackageName() + " : " + installationSize + " bytes");
-	InputStream downloadStream = service.download(appDetails.getPackageName(), versionCode, offerType);
 
 	FileOutputStream outputStream = new FileOutputStream(appDetails.getPackageName() + ".apk");
 
