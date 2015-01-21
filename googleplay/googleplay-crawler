@@ -1,0 +1,20 @@
+#!/bin/bash
+SCRIPTNAME=`basename $0`
+BINDIR=`dirname $0`
+APPDIR=$BINDIR
+# LIBDIR=$APPDIR/../../lib
+# DROIDSAFE_DIR=$APPDIR/../..
+# DROIDSAFE_BINDIR=$APPDIR/../../bin
+APPJAR=$APPDIR/googleplaycrawler-0.3.jar
+CONF=$APPDIR/crawler.conf
+
+APP_CLASSPATH=$APPJAR:$APP_CLASSPATH
+
+#echo "app classpath: $APP_CLASSPATH"
+
+if [ "$#" -eq 0 ]; then
+    java -jar $APPJAR
+else
+    java -jar $APPJAR --conf $CONF "$@"
+fi
+
