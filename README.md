@@ -75,7 +75,26 @@ This will ignore the tests and pack for you. If you want to run tests, you need 
 </repository>
 ```
 
-### General
+
+### Usage Overview
+Here is a quick overview of what you need to do to make use of the googleplay api.  
+Google requires a few pieces of information associated with each APK download.  So,
+generally, you will need to perform a few house keeping steps before you can get to
+download an APK.  It is similar to how you would login to the google play normally.
+
+Here are a few steps that you have to do
+
+* Setup crawler configuration file **crawler.conf**
+* Get an android id and security token (should only do once, and keep it in configuraton file)
+* Register a device
+
+After you have done these steps, you then should be able to perform the interesting tasks:
+* Perform search
+* List apps
+* Download apps
+
+
+#### General (java command's way)
 
     java -jar googleplay.jar --help
     usage: googleplay [-h] [-f [CONF]] [-i [ANDROIDID]] [-e [EMAIL]]
