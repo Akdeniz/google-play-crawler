@@ -93,9 +93,53 @@ After you have done these steps, you then should be able to perform the interest
 * List apps
 * Download apps
 
+Here is a quick walk through the googleapi with the use of wrapper script *googleapi-crawler* written for Unix.  It just
+takes the hassle of specifying jar file in your command line.
 
-#### General (java command's way)
+#### Setup crawler.conf
+under *googleplay* folder, there is a sample configuration file 'crawler.conf.sample'.  
+Just copy the sample file to the configuration file you want to use.  Please remember NOT 
+to checkin *crawler.conf* or else you may let the world know your login credential.
 
+```
+cp googleplay/crawler.conf.sample googleplay/crawler.conf
+```
+
+Then edit *googleplay/crawler.conf* and enter your username and password, and save it.
+
+####  Get Android ID and Security Token
+In case you do not have one, you can use the *command* 'checkin' of the crawler to obtain one.  You can either use a real device, or get a fake one. It's troublesome to get your android ID from your real device.  So, to get a fake one, you can use: 
+
+```
+googleplay/googleplay-crawler checkin
+```
+This will print out the unique Android ID and security token you can use in your *crawler.conf* file.  Please
+note that once your set it up, there is no need to change unless you want to.  This is your "device" as far 
+as googleplay API is concerned.
+
+
+#### Register a device
+You will need to register your device with google play before you are able to download any APK.  *It is very likely* you are only able to download apps that your device can support.
+
+To register your device with googleplay, use:
+```
+googleplay/googleplay-crawler register
+```
+ 
+#### Search for Apps:
+
+#### Download Apps:
+```
+googleplay/googoleplay-crawler download <apps> 
+```
+
+If you want to download apps, you need to know what the app ids of the apps you want to download.  The command below will download two APKs
+```
+googleplay/googoleplay-crawler download  com.rovio.angrybirds com.first75.checkers2
+```
+
+### Using Java Command with googleplay-xyz.jar 
+```
     java -jar googleplay.jar --help
     usage: googleplay [-h] [-f [CONF]] [-i [ANDROIDID]] [-e [EMAIL]]
                       [-p [PASSWORD]] [-t [SECURITYTOKEN]] [-a [HOST]] 
@@ -130,6 +174,7 @@ After you have done these steps, you then should be able to perform the interest
       Command to be executed.
     
       {download,checkin,list,categories,search,permissions,reviews,register, usegcm}
+```
 
 ### Sub-commands
 

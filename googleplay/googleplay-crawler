@@ -10,7 +10,7 @@ CONF=$APPDIR/crawler.conf
 
 APP_CLASSPATH=$APPJAR:$APP_CLASSPATH
 
-echo "app classpath: $APP_CLASSPATH"
+#echo "app classpath: $APP_CLASSPATH"
 
 if [ "$#" -eq 0 ]; then
     java -jar $APPJAR
