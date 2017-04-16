@@ -23,7 +23,7 @@ Take a look at code, it is not that sophisticated..
 
 ## Building and running
 
-###SBT
+### SBT
 
 Make sure you hava protoc installed (version 2.5!).
 On OSX:
@@ -45,7 +45,7 @@ sbt assembly
 ```
 Note: This will generate the protobuf java files and compile them as part of the project.
 
-###Maven
+### Maven
 
 Install Maven 3 & protobuf compiler (version 2.5!)
 ```
