@@ -37,7 +37,7 @@ sudo apt-get install protobuf-compiler libprotobuf-java
 ```
 
 Install SBT:
-http://www.scala-sbt.org/release/docs/Getting-Started/Setup.html
+http://www.scala-sbt.org/release/docs/Setup.html
 
 To build:
 ```
