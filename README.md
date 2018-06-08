@@ -3,12 +3,12 @@ Google Play Crawler JAVA API
 
 google-play-crawler is simply for searching android applications on GooglePlay, and also downloading them.
 
-Now you can dowload applications with single click from web to your desktop. 
+Now you can download applications with single click from web to your desktop. 
 
-It also has checkin ability to generate ANDROID-ID for you. 
+It also has a checkin ability to generate ANDROID-ID for you. 
 
 While doing checkin with your account, it uses Galaxy S3 properties. So only Galaxy S3 compatible applications will be retrieved.
-If you try to download incompatible application for Galaxy S3, you will get an exception like this : 
+If you try to download incompatible application for Galaxy S3, you will get an exception like this:
 ```java
 "The item you were attempting to purchase could not be found."
 ```
@@ -37,7 +37,7 @@ sudo apt-get install protobuf-compiler libprotobuf-java
 ```
 
 Install SBT:
-http://www.scala-sbt.org/release/docs/Getting-Started/Setup.html
+http://www.scala-sbt.org/release/docs/Setup.html
 
 To build:
 ```
